@@ -71,7 +71,7 @@ namespace OriDeModLoader
 
                     foreach (var modType in modTypes)
                     {
-                        Log($"Loading {modType}");
+                        Log($"Instantiating {modType}");
                         var mod = (IMod)Activator.CreateInstance(modType);
                         loadedMods.Add(mod);
 
