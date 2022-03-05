@@ -5,10 +5,20 @@ namespace OriDeModLoader
 {
     public static class Hooks
     {
+        public static Action OnControllerInitialise;
         public static Action OnStartNewGame;
         //public Action OnLoadSaveFile;
         //public Action OnDeath;
         //public Action OnRespawn;
+    }
+
+    [HarmonyPatch(typeof(GameController), nameof(GameController.Awake))]
+    internal class Hook_OnControllerInitialise
+    {
+        static void Postfix()
+        {
+            Hooks.OnControllerInitialise?.Invoke();
+        }
     }
 
     [HarmonyPatch(typeof(GameController), nameof(GameController.SetupGameplay))]

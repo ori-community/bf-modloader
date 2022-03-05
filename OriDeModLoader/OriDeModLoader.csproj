@@ -32,10 +32,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\ref\Assembly-CSharp.dll</HintPath>
+      <HintPath>$(ORIDE_DATA_DIR)\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\ref\UnityEngine.dll</HintPath>
+      <HintPath>$(ORIDE_DATA_DIR)\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="BaseMod.cs" />
     <Compile Include="BasicMessageProvider.cs" />
+    <Compile Include="Controllers.cs" />
     <Compile Include="Hooks.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -56,7 +57,6 @@
     <PackageReference Include="Lib.Harmony">
       <Version>2.0.2</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.DotNet.BuildTools.GenAPI" Version="1.0.0-beta-00081" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
