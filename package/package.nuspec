@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <version>0.1</version>
+    <id>OriDeModLoader</id>
+    <title>Ori DE Mod Loader</title>
+    <authors>Kirefel</authors>
+    <description>Mod loader for Ori DE</description>
+    <repository type="git" url="https://github.com/Kirefel/OriDeModLoader" />
+    <license type="expression">MIT</license>
+    <dependencies>
+      <group targetFramework=".NETFramework3.5">
+        <dependency id="OriDeModLibs" version="1.0.1" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

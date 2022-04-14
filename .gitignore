@@ -3,4 +3,8 @@
 [Oo]bj/
 MigrationBackup/
 *.user
+ref/
+package/lib/
+build/
 
+Directory.Build.props

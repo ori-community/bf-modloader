@@ -31,12 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>$(ORIDE_DATA_DIR)\Managed\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>$(ORIDE_DATA_DIR)\Managed\UnityEngine.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -56,6 +50,9 @@
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
       <Version>2.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="OriDeModLibs">
+      <Version>1.0.1</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

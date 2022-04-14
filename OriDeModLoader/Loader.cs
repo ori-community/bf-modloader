@@ -24,20 +24,20 @@ namespace OriDeModLoader
                 Patch();
 
                 watcher = new FileSystemWatcher("Mods", "*dll");
-                watcher.Changed += Watcher_Changed;
-                watcher.Created += Watcher_Changed;
+                //watcher.Changed += Watcher_Changed;
+                //watcher.Created += Watcher_Changed;
 
                 LoadMods();
             }
         }
 
-        private static void Watcher_Changed(object sender, FileSystemEventArgs e)
-        {
-            foreach (var loadedMod in loadedMods)
-                loadedMod.Unload();
+        //private static void Watcher_Changed(object sender, FileSystemEventArgs e)
+        //{
+        //    foreach (var loadedMod in loadedMods)
+        //        loadedMod.Unload();
 
-            LoadMods();
-        }
+        //    LoadMods();
+        //}
 
         private static void Patch()
         {
