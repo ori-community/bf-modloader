@@ -1,1 +1,1 @@
-nuget.exe package -OutputDirectory build
+msbuild -r -property:Configuration=Release;OutDir=..\build\

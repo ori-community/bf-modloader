@@ -6,5 +6,6 @@ MigrationBackup/
 ref/
 package/lib/
 build/
-
-Directory.Build.props
+pkgbuild/
+release/
+OriDeModLoader.zip

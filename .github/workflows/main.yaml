@@ -1,0 +1,37 @@
+name: Build and push package
+
+on: push
+
+jobs:
+  build:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+      - uses: NuGet/setup-nuget@v1.0.6
+      - uses: microsoft/setup-msbuild@v1.1
+
+      - name: Build
+        run: build.cmd
+      
+      - name: Prepare release
+        run: publishrelease.cmd
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          name: loader
+          path: ./OriDeModLoader.zip
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: ./OriDeModLoader.zip
+          generate_release_notes: true
+          draft: true
+
+      # - name: Publish nuget package
+      #   if: startsWith(github.ref, 'refs/tags/')
+      #   run: publishnuget.cmd
+      #   run: nuget push pkgbuild/*.nupkg -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json

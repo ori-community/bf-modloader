@@ -10,7 +10,6 @@ namespace OriDeModLoader
     public static class Loader
     {
         private static List<IMod> loadedMods = new List<IMod>();
-        private static FileSystemWatcher watcher;
 
         public static void Main(string[] args)
         {
@@ -23,21 +22,9 @@ namespace OriDeModLoader
             {
                 Patch();
 
-                watcher = new FileSystemWatcher("Mods", "*dll");
-                //watcher.Changed += Watcher_Changed;
-                //watcher.Created += Watcher_Changed;
-
                 LoadMods();
             }
         }
-
-        //private static void Watcher_Changed(object sender, FileSystemEventArgs e)
-        //{
-        //    foreach (var loadedMod in loadedMods)
-        //        loadedMod.Unload();
-
-        //    LoadMods();
-        //}
 
         private static void Patch()
         {
