@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <version>0.1</version>
+    <version>0.1.1-alpha</version>
     <id>OriDeModLoader</id>
     <title>Ori DE Mod Loader</title>
     <authors>Kirefel</authors>
