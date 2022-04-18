@@ -1,1 +1,1 @@
-msbuild -r -property:Configuration=Release;OutDir=..\build\
+msbuild /t:Build /restore /p:Configuration=Release /p:OutDir=..\build
