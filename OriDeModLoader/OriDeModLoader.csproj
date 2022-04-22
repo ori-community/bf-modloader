@@ -47,13 +47,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseMod.cs" />
+    <Compile Include="Loader\BaseMod.cs" />
     <Compile Include="BasicMessageProvider.cs" />
     <Compile Include="Controllers.cs" />
     <Compile Include="Hooks.cs" />
-    <Compile Include="Loader.cs" />
+    <Compile Include="Loader\Loader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SceneBootstrap.cs" />
     <Compile Include="Setting.cs" />
+    <Compile Include="UIExtensions\Map\AreaMapIconManagerCustomIconsPatch.cs" />
+    <Compile Include="UIExtensions\Map\CustomWorldMapIconManager.cs" />
+    <Compile Include="UIExtensions\Map\RuntimeWorldMapIconCustomShowPatch.cs" />
+    <Compile Include="UIExtensions\Menu\CustomMenuManager.cs" />
+    <Compile Include="UIExtensions\Menu\CustomOptionsScreen.cs" />
+    <Compile Include="UIExtensions\Menu\CustomOptionsScreenDef.cs" />
+    <Compile Include="UIExtensions\Menu\CustomSlider.cs" />
+    <Compile Include="UIExtensions\Map\CustomWorldMapIcon.cs" />
+    <Compile Include="UIExtensions\Menu\ToggleCustomSettingsAction.cs" />
+    <Compile Include="UIExtensions\Menu\UILibExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
