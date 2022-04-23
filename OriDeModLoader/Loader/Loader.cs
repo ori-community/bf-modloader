@@ -32,13 +32,18 @@ namespace OriDeModLoader
             harmony.PatchAll();
         }
 
+        internal static void ReloadStrings()
+        {
+            foreach (var mod in loadedMods)
+                Strings.InitSingle(mod.Name, GameSettings.Instance.Language);
+        }
+
         private static void LoadMods()
         {
             const string modsDir = "Mods";
             if (Directory.Exists(modsDir))
             {
-                LoadFromAssemblies(Directory.GetFiles(modsDir, "*Lib.dll")); // todo actually good dependency resolution
-                LoadFromAssemblies(Directory.GetFiles(modsDir, "*.dll").Where(m => !m.EndsWith("Lib.dll")));
+                LoadFromAssemblies(Directory.GetFiles(modsDir, "*.dll"));
             }
             else
             {
@@ -61,6 +66,8 @@ namespace OriDeModLoader
                         Log($"Instantiating {modType}");
                         var mod = (IMod)Activator.CreateInstance(modType);
                         loadedMods.Add(mod);
+
+                        Strings.InitSingle(mod.Name, Language.English); // English is primary fallback
 
                         Log($"Initialising {mod.Name}");
                         mod.Init();

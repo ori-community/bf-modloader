@@ -47,11 +47,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Loader\AfterLoadSettings.cs" />
     <Compile Include="Loader\BaseMod.cs" />
     <Compile Include="BasicMessageProvider.cs" />
     <Compile Include="Controllers.cs" />
     <Compile Include="Hooks.cs" />
     <Compile Include="Loader\Loader.cs" />
+    <Compile Include="Strings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SceneBootstrap.cs" />
     <Compile Include="SeinAbilities\CustomSeinAbility.cs" />
