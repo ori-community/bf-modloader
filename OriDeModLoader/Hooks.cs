@@ -7,6 +7,7 @@ namespace OriDeModLoader
     {
         public static Action OnControllerInitialise;
         public static Action OnStartNewGame;
+        public static Action<string> OnSceneRootUnloaded;
         //public Action OnLoadSaveFile;
         //public Action OnDeath;
         //public Action OnRespawn;
@@ -27,6 +28,15 @@ namespace OriDeModLoader
         static void Postfix()
         {
             Hooks.OnStartNewGame?.Invoke();
+        }
+    }
+
+    [HarmonyPatch(typeof(SceneRoot), nameof(SceneRoot.Unload))]
+    internal class Hook_OnSceneRootUnload
+    {
+        static void Postfix(SceneRoot __instance)
+        {
+            Hooks.OnSceneRootUnloaded?.Invoke(__instance.name);
         }
     }
 }

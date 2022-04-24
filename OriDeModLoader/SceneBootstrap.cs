@@ -17,14 +17,24 @@ namespace OriDeModLoader
         void Awake()
         {
             Events.Scheduler.OnSceneRootPreEnabled.Add(OnSceneRootPreEnabled);
+            Hooks.OnSceneRootUnloaded += OnSceneRootUnloaded;
         }
 
         void OnSceneRootPreEnabled(SceneRoot sceneRoot)
         {
-            if (BootstrapActions.ContainsKey(sceneRoot.name))
+            if (!loadedScenes.Contains(sceneRoot.name) && BootstrapActions.ContainsKey(sceneRoot.name))
+            {
                 BootstrapActions[sceneRoot.name].Invoke(sceneRoot);
+                loadedScenes.Add(sceneRoot.name);
+            }
+        }
+
+        void OnSceneRootUnloaded(string name)
+        {
+            loadedScenes.Remove(name);
         }
 
         public Dictionary<string, Action<SceneRoot>> BootstrapActions = new Dictionary<string, Action<SceneRoot>>();
+        private HashSet<string> loadedScenes = new HashSet<string>();
     }
 }
