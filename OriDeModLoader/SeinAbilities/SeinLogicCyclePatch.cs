@@ -1,19 +1,19 @@
-﻿using HarmonyLib;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
+using HarmonyLib;
 
 namespace OriDeModLoader.CustomSeinAbilities
 {
     [HarmonyPatch(typeof(SeinLogicCycle), nameof(SeinLogicCycle.FixedUpdate))]
     internal class SeinLogicCyclePatch
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> codes = instructions.ToList();
             bool needsUpdateActive = true;
 
-            var updateCharacterStateMethod = AccessTools.Method(typeof(CharacterState), nameof(CharacterState.UpdateCharacterState), parameters: new [] { typeof(CharacterState) });
+            var updateCharacterStateMethod = AccessTools.Method(typeof(CharacterState), nameof(CharacterState.UpdateCharacterState), parameters: new[] { typeof(CharacterState) });
 
             for (int i = 0; i < codes.Count; i++)
             {
@@ -28,7 +28,7 @@ namespace OriDeModLoader.CustomSeinAbilities
             }
         }
 
-        static void Postfix()
+        private static void Postfix()
         {
             CustomSeinAbilityManager.UpdateCharacterState();
         }

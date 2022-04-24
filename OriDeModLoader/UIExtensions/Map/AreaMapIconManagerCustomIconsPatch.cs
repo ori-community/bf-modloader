@@ -1,12 +1,12 @@
-﻿using HarmonyLib;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
+using HarmonyLib;
 
 namespace OriDeModLoader.UIExtensions
 {
     [HarmonyPatch(typeof(AreaMapIconManager), nameof(AreaMapIconManager.ShowAreaIcons))]
-    class AreaMapIconManagerCustomIconsPatch
+    internal class AreaMapIconManagerCustomIconsPatch
     {
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {

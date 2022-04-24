@@ -1,5 +1,5 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
+using HarmonyLib;
 
 namespace OriDeModLoader
 {
@@ -16,7 +16,7 @@ namespace OriDeModLoader
     [HarmonyPatch(typeof(GameController), nameof(GameController.Awake))]
     internal class Hook_OnControllerInitialise
     {
-        static void Postfix()
+        private static void Postfix()
         {
             Hooks.OnControllerInitialise?.Invoke();
         }
@@ -25,7 +25,7 @@ namespace OriDeModLoader
     [HarmonyPatch(typeof(GameController), nameof(GameController.SetupGameplay))]
     internal class Hook_OnStartNewGame
     {
-        static void Postfix()
+        private static void Postfix()
         {
             Hooks.OnStartNewGame?.Invoke();
         }
@@ -34,7 +34,7 @@ namespace OriDeModLoader
     [HarmonyPatch(typeof(SceneRoot), nameof(SceneRoot.Unload))]
     internal class Hook_OnSceneRootUnload
     {
-        static void Postfix(SceneRoot __instance)
+        private static void Postfix(SceneRoot __instance)
         {
             Hooks.OnSceneRootUnloaded?.Invoke(__instance.name);
         }

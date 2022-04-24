@@ -1,11 +1,11 @@
-﻿using BaseModLib;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using BaseModLib;
 
 namespace OriDeModLoader.CustomSeinAbilities
 {
     public static class CustomSeinAbilityManager
     {
-        private static List<CustomSeinAbility> customAbilities = new List<CustomSeinAbility>();
+        private static readonly List<CustomSeinAbility> customAbilities = new List<CustomSeinAbility>();
 
         /// <summary>Adds a custom ability</summary>
         /// <typeparam name="T">The type of the ability to add</typeparam>

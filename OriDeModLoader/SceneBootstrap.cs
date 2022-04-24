@@ -1,7 +1,7 @@
-﻿using BaseModLib;
-using Game;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using BaseModLib;
+using Game;
 using UnityEngine;
 
 namespace OriDeModLoader
@@ -13,14 +13,13 @@ namespace OriDeModLoader
             Controllers.Add<SceneBootstrap>(group: group, callback: mb => callback(mb as SceneBootstrap));
         }
 
-
-        void Awake()
+        private void Awake()
         {
             Events.Scheduler.OnSceneRootPreEnabled.Add(OnSceneRootPreEnabled);
             Hooks.OnSceneRootUnloaded += OnSceneRootUnloaded;
         }
 
-        void OnSceneRootPreEnabled(SceneRoot sceneRoot)
+        private void OnSceneRootPreEnabled(SceneRoot sceneRoot)
         {
             if (!loadedScenes.Contains(sceneRoot.name) && BootstrapActions.ContainsKey(sceneRoot.name))
             {
@@ -29,12 +28,12 @@ namespace OriDeModLoader
             }
         }
 
-        void OnSceneRootUnloaded(string name)
+        private void OnSceneRootUnloaded(string name)
         {
             loadedScenes.Remove(name);
         }
 
         public Dictionary<string, Action<SceneRoot>> BootstrapActions = new Dictionary<string, Action<SceneRoot>>();
-        private HashSet<string> loadedScenes = new HashSet<string>();
+        private readonly HashSet<string> loadedScenes = new HashSet<string>();
     }
 }

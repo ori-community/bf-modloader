@@ -4,15 +4,15 @@
     {
         public SettingBase(string name, bool nag = true)
         {
-            this.Name = name;
+            Name = name;
             //RandomizerSettings.All[name] = this;
 
-            this.Nag = nag;
+            Nag = nag;
         }
 
         public abstract void Parse(string value);
 
-        public abstract new string ToString();
+        public new abstract string ToString();
 
         public abstract void Reset();
 
@@ -25,18 +25,18 @@
     {
         public Setting(string name, T defaultValue, bool nag = true) : base(name, nag)
         {
-            this.Default = defaultValue;
-            this.Value = this.Default;
+            Default = defaultValue;
+            Value = Default;
         }
 
         public override string ToString()
         {
-            return this.Value.ToString();
+            return Value.ToString();
         }
 
         public override void Reset()
         {
-            this.Value = this.Default;
+            Value = Default;
         }
 
         public static implicit operator T(Setting<T> setting) => setting.Value;
@@ -52,7 +52,7 @@
 
         public override void Parse(string value)
         {
-            this.Value = bool.Parse(value);
+            Value = bool.Parse(value);
         }
     }
 
@@ -62,7 +62,7 @@
 
         public override void Parse(string value)
         {
-            this.Value = float.Parse(value);
+            Value = float.Parse(value);
         }
     }
 }

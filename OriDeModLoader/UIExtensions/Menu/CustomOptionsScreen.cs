@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using BaseModLib;
+﻿using BaseModLib;
+using UnityEngine;
 
 namespace OriDeModLoader.UIExtensions
 {
@@ -14,14 +14,14 @@ namespace OriDeModLoader.UIExtensions
         public virtual void Awake()
         {
             // Layout and selection manager
-            this.layout = GetComponent<CleverMenuItemLayout>();
-            this.selectionManager = GetComponent<CleverMenuItemSelectionManager>();
-            this.group = GetComponent<CleverMenuItemGroup>();
-            this.layout.MenuItems.Clear();
-            this.selectionManager.MenuItems.Clear();
-            this.group.Options.Clear();
-            this.pivot = transform.FindChild("highlightFade/pivot");
-            foreach (object obj in this.pivot)
+            layout = GetComponent<CleverMenuItemLayout>();
+            selectionManager = GetComponent<CleverMenuItemSelectionManager>();
+            group = GetComponent<CleverMenuItemGroup>();
+            layout.MenuItems.Clear();
+            selectionManager.MenuItems.Clear();
+            group.Options.Clear();
+            pivot = transform.FindChild("highlightFade/pivot");
+            foreach (object obj in pivot)
             {
                 Destroy(((Transform)obj).gameObject);
             }
@@ -36,23 +36,23 @@ namespace OriDeModLoader.UIExtensions
             // Tooltip
             Transform originalToolip = SettingsScreen.Instance.transform.Find("highlightFade/pivot/tooltip");
             Transform tooltip = Instantiate(originalToolip);
-            tooltip.SetParent(this.pivot);
+            tooltip.SetParent(pivot);
             tooltip.position = originalToolip.position;
-            this.tooltipController = tooltip.GetComponent<CleverMenuItemTooltipController>();
-            this.tooltipController.Selection = this.selectionManager;
-            this.tooltipController.UpdateTooltip();
-            this.tooltipController.enabled = true;
+            tooltipController = tooltip.GetComponent<CleverMenuItemTooltipController>();
+            tooltipController.Selection = selectionManager;
+            tooltipController.UpdateTooltip();
+            tooltipController.enabled = true;
 
-            this.InitScreen();
-            this.selectionManager.SetCurrentItem(0);
+            InitScreen();
+            selectionManager.SetCurrentItem(0);
         }
 
         public abstract void InitScreen();
 
         private void AddToLayout(CleverMenuItem item)
         {
-            this.layout.AddItem(item);
-            this.layout.Sort();
+            layout.AddItem(item);
+            layout.Sort();
             item.SetOpacity(1f);
             item.OnUnhighlight();
         }
@@ -60,13 +60,13 @@ namespace OriDeModLoader.UIExtensions
         public CleverMenuItem AddItem(string label)
         {
             GameObject gameObject = Instantiate(SettingsScreen.Instance.transform.Find("highlightFade/pivot/damageText").gameObject);
-            gameObject.transform.SetParent(this.pivot);
+            gameObject.transform.SetParent(pivot);
             foreach (var c in gameObject.GetComponentsInChildren<MonoBehaviour>())
                 c.enabled = true;
             CleverMenuItem component = gameObject.GetComponent<CleverMenuItem>();
             component.Pressed = null;
-            this.selectionManager.MenuItems.Add(component);
-            this.AddToLayout(component);
+            selectionManager.MenuItems.Add(component);
+            AddToLayout(component);
             TransparencyAnimator[] transparencyAnimators = component.transform.GetComponentsInChildren<TransparencyAnimator>();
             for (int i = 0; i < transparencyAnimators.Length; i++)
             {
@@ -83,7 +83,7 @@ namespace OriDeModLoader.UIExtensions
 
         public void AddToggle(BoolSetting setting, string tooltip)
         {
-            CleverMenuItem cleverMenuItem = this.AddItem(setting.Name);
+            CleverMenuItem cleverMenuItem = AddItem(setting.Name);
             cleverMenuItem.name = setting.Name;
             ToggleCustomSettingsAction toggleCustomSettingsAction = cleverMenuItem.gameObject.AddComponent<ToggleCustomSettingsAction>();
             toggleCustomSettingsAction.Setting = setting;
@@ -102,10 +102,10 @@ namespace OriDeModLoader.UIExtensions
                 c.enabled = true;
 
             // Add to navigation manager (required for all option types)
-            clone.transform.SetParent(this.pivot);
+            clone.transform.SetParent(pivot);
             CleverMenuItem cleverMenuItem = clone.GetComponent<CleverMenuItem>();
-            this.selectionManager.MenuItems.Add(cleverMenuItem);
-            this.AddToLayout(cleverMenuItem);
+            selectionManager.MenuItems.Add(cleverMenuItem);
+            AddToLayout(cleverMenuItem);
 
             // Add to group (required for sliders and dropdown items, but not toggles)
             CleverValueSlider slider = clone.transform.FindChild("slider").GetComponent<CleverValueSlider>();
@@ -114,7 +114,7 @@ namespace OriDeModLoader.UIExtensions
                 transform.FindChild("highlightFade/legend/pcLegend/navigate").GetComponent<MessageBox>(),
                 transform.FindChild("highlightFade/legend/xBoxLegend/navigate").GetComponent<MessageBox>()
             };
-            this.group.AddItem(cleverMenuItem, slider);
+            group.AddItem(cleverMenuItem, slider);
 
             slider.MinValue = min;
             slider.MaxValue = max;

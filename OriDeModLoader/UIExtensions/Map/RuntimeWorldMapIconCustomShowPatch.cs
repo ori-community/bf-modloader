@@ -1,12 +1,12 @@
-﻿using HarmonyLib;
-using System.Linq;
+﻿using System.Linq;
+using HarmonyLib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace OriDeModLoader.UIExtensions
 {
     [HarmonyPatch(typeof(RuntimeWorldMapIcon), nameof(RuntimeWorldMapIcon.Show))]
-    class RuntimeWorldMapIconCustomShowPatch
+    internal class RuntimeWorldMapIconCustomShowPatch
     {
         public static bool Prefix(RuntimeWorldMapIcon __instance)
         {

@@ -1,6 +1,6 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using HarmonyLib;
 using UnityEngine;
 
 namespace BaseModLib
@@ -26,8 +26,9 @@ namespace BaseModLib
     [HarmonyPatch(typeof(GameController), nameof(GameController.Awake))]
     internal class HookControllers
     {
-        static Dictionary<string, GameObject> groups = new Dictionary<string, GameObject>();
-        static GameObject GetGroup(string name, GameController gameController)
+        private static readonly Dictionary<string, GameObject> groups = new Dictionary<string, GameObject>();
+
+        private static GameObject GetGroup(string name, GameController gameController)
         {
             if (groups.ContainsKey(name))
                 return groups[name];
@@ -38,7 +39,7 @@ namespace BaseModLib
             return go;
         }
 
-        static void Postfix(GameController __instance)
+        private static void Postfix(GameController __instance)
         {
             foreach (var controller in Controllers.controllers)
             {

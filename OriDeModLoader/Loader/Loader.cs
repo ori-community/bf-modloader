@@ -9,7 +9,7 @@ namespace OriDeModLoader
 {
     public static class Loader
     {
-        private static List<IMod> loadedMods = new List<IMod>();
+        private static readonly List<IMod> loadedMods = new List<IMod>();
 
         public static void Main(string[] args)
         {
@@ -20,16 +20,11 @@ namespace OriDeModLoader
         {
             if (args.LoadedAssembly.GetName().Name == "Assembly-CSharp")
             {
-                Patch();
+                var harmony = new Harmony("com.oride.modloader");
+                harmony.PatchAll();
 
                 LoadMods();
             }
-        }
-
-        private static void Patch()
-        {
-            var harmony = new Harmony("com.oride.modloader");
-            harmony.PatchAll();
         }
 
         internal static void ReloadStrings()
