@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 
-namespace SeinAbilities
+namespace OriDeModLoader.CustomSeinAbilities
 {
     [HarmonyPatch(typeof(SeinLogicCycle), nameof(SeinLogicCycle.FixedUpdate))]
     internal class SeinLogicCyclePatch

@@ -1,4 +1,4 @@
-﻿namespace SeinAbilities
+﻿namespace OriDeModLoader.CustomSeinAbilities
 {
     public abstract class CustomSeinAbility : CharacterState
     {

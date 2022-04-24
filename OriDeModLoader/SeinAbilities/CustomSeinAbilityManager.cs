@@ -1,7 +1,7 @@
 ﻿using BaseModLib;
 using System.Collections.Generic;
 
-namespace SeinAbilities
+namespace OriDeModLoader.CustomSeinAbilities
 {
     public static class CustomSeinAbilityManager
     {
