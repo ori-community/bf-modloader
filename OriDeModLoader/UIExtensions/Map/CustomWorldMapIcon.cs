@@ -12,6 +12,7 @@ namespace OriDeModLoader.UIExtensions
         public Vector3 Position;
         public Vector3 Scale = new Vector3(4, 4, 1);
         public bool IsSecret;
+        public Func<MoonGuid, bool> Visible;
 
         private CustomWorldMapIcon(Vector3 position, MoonGuid guid)
         {

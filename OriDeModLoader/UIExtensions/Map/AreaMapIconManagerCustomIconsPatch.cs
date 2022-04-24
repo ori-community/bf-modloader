@@ -40,8 +40,8 @@ namespace OriDeModLoader.UIExtensions
                     }
                 }
 
-                bool collected = false; // TODO RandomizerLocationManager.IsPickupCollected(icon.Guid);
-                if (runtimeWorldMapIcon == null && !collected)
+                bool visible = icon.Visible?.Invoke(icon.Guid) ?? true;
+                if (runtimeWorldMapIcon == null && visible)
                 {
                     var worldMapIcon = (GameWorldArea.WorldMapIcon)FormatterServices.GetUninitializedObject(typeof(GameWorldArea.WorldMapIcon));
                     worldMapIcon.Guid = icon.Guid;
@@ -53,7 +53,7 @@ namespace OriDeModLoader.UIExtensions
                 else if (runtimeWorldMapIcon != null)
                 {
                     runtimeWorldMapIcon.Position = icon.Position;
-                    runtimeWorldMapIcon.Icon = collected ? WorldMapIconType.Invisible : WorldMapIconType.EnergyGateTwelve;
+                    runtimeWorldMapIcon.Icon = visible ? WorldMapIconType.EnergyGateTwelve : WorldMapIconType.Invisible;
                 }
             }
         }
