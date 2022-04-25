@@ -46,5 +46,5 @@ jobs:
           tag_name: ${{ github.event.inputs.version }}
 
       - name: Publish nuget package
-        if: ${{ github.event.inputs.upload }}
+        if: ${{ github.event.inputs.upload == 'true' }}
         run: .\publishnuget.ps1 -ApiKey ${{ secrets.NUGET_API_KEY }} -Version ${{ github.event.inputs.version }}
