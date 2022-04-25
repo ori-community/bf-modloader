@@ -17,8 +17,6 @@ jobs:
     runs-on: windows-2019
     steps:
       - uses: actions/checkout@v2
-        with:
-          ref: main
       - uses: NuGet/setup-nuget@v1.0.6
       - uses: microsoft/setup-msbuild@v1.1
 
