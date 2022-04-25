@@ -24,13 +24,12 @@ namespace OriDeModLoader
             {
                 while (!reader.EndOfStream)
                 {
-                    string line = reader.ReadLine();
-
-                    int comment = line.IndexOf('#');
-                    if (comment >= 0)
-                        line = line.Substring(0, comment);
+                    string line = reader.ReadLine().Trim();
 
                     if (string.IsNullOrEmpty(line))
+                        continue;
+
+                    if (line[0] == '#')
                         continue;
 
                     int equals = line.IndexOf('=');
