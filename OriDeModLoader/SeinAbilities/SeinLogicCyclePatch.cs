@@ -24,13 +24,13 @@ namespace OriDeModLoader.CustomSeinAbilities
                     needsUpdateActive = false;
                 }
 
+                // Get this in at the end, but not a postfix. A postfix will still run even if the method returns early.
+                // The final instruction is also ret
+                if (i == codes.Count - 1)
+                    yield return CodeInstruction.Call(typeof(CustomSeinAbilityManager), nameof(CustomSeinAbilityManager.UpdateCharacterState));
+
                 yield return codes[i];
             }
-        }
-
-        private static void Postfix()
-        {
-            CustomSeinAbilityManager.UpdateCharacterState();
         }
     }
 }
