@@ -7,8 +7,8 @@ namespace OriDeModLoader
     {
         private static void Postfix()
         {
-            Loader.ReloadStrings();
-            Game.Events.Scheduler.OnGameLanguageChange.Add(Loader.ReloadStrings);
+            EntryPoint.ReloadStrings();
+            Game.Events.Scheduler.OnGameLanguageChange.Add(EntryPoint.ReloadStrings);
         }
     }
 }

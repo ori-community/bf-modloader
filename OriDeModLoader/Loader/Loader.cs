@@ -3,30 +3,30 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using BFModLoader.Util;
 using HarmonyLib;
+using OriDeModLoader.Util;
 
 namespace OriDeModLoader
 {
-    public static class Loader
+    public static class EntryPoint
     {
         private static readonly List<IMod> loadedMods = new List<IMod>();
 
-        public static void Main(string[] args)
-        {
-            AppDomain.CurrentDomain.AssemblyLoad += CurrentDomain_AssemblyLoad;
+        private const string ModLoaderDir = "C:\\moon\\Ori and the Blind Forest Mod Loader"; 
+        
+        public static void BootModLoader()
+        { 
+            //Attach a terminal to our game 
+            ConsoleUtil.CreateConsole();
+            FileUtil.TouchFile(ModLoaderDir + "\\modloader-heartbeat");
+            
+            //Patch time
+            var harmony = new Harmony("com.oride.modloader");
+            harmony.PatchAll();
+
+            LoadMods();
         }
-
-        private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
-        {
-            if (args.LoadedAssembly.GetName().Name == "Assembly-CSharp")
-            {
-                var harmony = new Harmony("com.oride.modloader");
-                harmony.PatchAll();
-
-                LoadMods();
-            }
-        }
-
         internal static void ReloadStrings()
         {
             foreach (var mod in loadedMods)
@@ -35,7 +35,7 @@ namespace OriDeModLoader
 
         private static void LoadMods()
         {
-            const string modsDir = "Mods";
+            const string modsDir = ModLoaderDir + "\\mods";
             if (Directory.Exists(modsDir))
             {
                 LoadFromAssemblies(Directory.GetFiles(modsDir, "*.dll"));
@@ -78,8 +78,7 @@ namespace OriDeModLoader
 
         public static void Log(string message)
         {
-            using (var sw = new StreamWriter("loader.log", true))
-                sw.WriteLine(message);
+            Console.Out.WriteLine(message);
         }
     }
 }
