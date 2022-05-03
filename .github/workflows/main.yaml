@@ -22,9 +22,6 @@ jobs:
 
       - name: Build
         run: .\build.ps1
-      
-      - name: Prepare release
-        run: .\publishrelease.ps1
 
       - name: Tag main branch
         uses: actions/github-script@v5
