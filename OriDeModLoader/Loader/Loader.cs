@@ -6,6 +6,7 @@ using System.Reflection;
 using BFModLoader.Util;
 using HarmonyLib;
 using OriDeModLoader.Util;
+using UnityEngine;
 
 namespace OriDeModLoader
 {
@@ -13,20 +14,21 @@ namespace OriDeModLoader
     {
         private static readonly List<IMod> loadedMods = new List<IMod>();
 
-        private const string ModLoaderDir = "C:\\moon\\Ori and the Blind Forest Mod Loader"; 
-        
         public static void BootModLoader()
         { 
             //Attach a terminal to our game 
             ConsoleUtil.CreateConsole();
-            FileUtil.TouchFile(ModLoaderDir + "\\modloader-heartbeat");
-            
+            FileUtil.TouchFile("modloader-heartbeat");
+
+            Application.logMessageReceived += LogCallback;
+
             //Patch time
             var harmony = new Harmony("com.oride.modloader");
             harmony.PatchAll();
 
             LoadMods();
         }
+
         internal static void ReloadStrings()
         {
             foreach (var mod in loadedMods)
@@ -35,7 +37,7 @@ namespace OriDeModLoader
 
         private static void LoadMods()
         {
-            const string modsDir = ModLoaderDir + "\\mods";
+            const string modsDir = "mods";
             if (Directory.Exists(modsDir))
             {
                 LoadFromAssemblies(Directory.GetFiles(modsDir, "*.dll"));
@@ -74,6 +76,13 @@ namespace OriDeModLoader
                     throw;
                 }
             }
+        }
+
+        private static void LogCallback(string condition, string stackTrace, LogType type)
+        {
+            Log($"{Time.time:F5} [{type}] {condition}");
+            if (!string.IsNullOrEmpty(stackTrace))
+                Log(stackTrace);
         }
 
         public static void Log(string message)
