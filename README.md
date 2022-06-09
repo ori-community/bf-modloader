@@ -4,9 +4,11 @@ Loads any mods in the `Mods` folder at startup. Injected by [MInject](https://gi
 
 ## Usage for users
 
-Currently the Launcher expects both `0Harmony.dll` and `OriDeModLoader.dll` in the working directory (by default that is the same directory as `Launcher.exe`).
+Extract anywhere.
 
-Copy mod assemblies (e.g Mod.dll) into `C:\moon\Ori and the Blind Forest Mod Loader\Mods`.
+Install mods by adding them to the `Mods` folder.
+
+Run `Injector.exe` to launch the game with mods.
 
 ## Usage for developers
 
