@@ -11,10 +11,11 @@ namespace Injector
     {
         static int Main(string[] args)
         {
-            //string path = "steam://run/387290";
-            string path = @"C:\Program Files (x86)\Steam\steamapps\common\Ori DE\oriDE.exe";
+            var gameExePath = GetPath();
+            if (gameExePath == null)
+                return 1;
 
-            var monoProcess = LaunchAndAttach(path);
+            var monoProcess = LaunchAndAttach(gameExePath);
             if (monoProcess == null)
             {
                 Console.WriteLine("Error attaching process");
@@ -46,6 +47,39 @@ namespace Injector
             //Dispose of the monoProcess before finishing
             monoProcess.Dispose();
             return 0;
+        }
+
+        static string GetPath()
+        {
+            const string steamLaunchUrl = "steam://run/387290";
+            const string configFilename = "injector.config";
+
+            var config = Config.FromFile(configFilename);
+
+            if (config.steam)
+                return steamLaunchUrl;
+
+            if (File.Exists(config.path))
+                return config.path;
+
+            if (Dialog.Show("Use steam?", "Steam", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                config.steam = true;
+                config.WriteToFile(configFilename);
+                return steamLaunchUrl;
+            }
+
+            if (Dialog.Show("Locate oriDE.exe", "Non-steam", MessageBoxButtons.OkCancel) == DialogResult.Cancel)
+                return null;
+
+            var exePath = OpenFileDialog.ShowDialog("Locate game executable...");
+            if (exePath == null || !File.Exists(exePath))
+                return null;
+
+            config.path = exePath;
+            config.steam = false;
+            config.WriteToFile(configFilename);
+            return config.path;
         }
 
         static MonoProcess LaunchAndAttach(string path)
