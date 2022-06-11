@@ -26,7 +26,4 @@
   <ItemGroup>
     <PackageReference Include="Lib.Harmony" Version="2.0.2" />
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="XCOPY &quot;$(TargetDir)\OriDeModLoader.dll&quot; &quot;C:\moon\Ori and the Blind Forest Mod Loader\&quot; /S /Y" />
-  </Target>
 </Project>

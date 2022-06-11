@@ -5,7 +5,7 @@
     <version>$PackageVersion$</version>
     <id>OriDeModLoader</id>
     <title>Ori DE Mod Loader</title>
-    <authors>Kirefel</authors>
+    <authors>Kirefel, Xemsys</authors>
     <description>Mod loader for Ori DE</description>
     <repository type="git" url="https://github.com/Kirefel/OriDeModLoader" />
     <license type="expression">MIT</license>
