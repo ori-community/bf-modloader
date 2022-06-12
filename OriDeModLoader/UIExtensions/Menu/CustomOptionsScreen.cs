@@ -91,10 +91,10 @@ namespace OriDeModLoader.UIExtensions
             return component;
         }
 
-        public void AddToggle(BoolSetting setting, string name, string tooltip)
+        public void AddToggle(BoolSetting setting, string label, string tooltip)
         {
-            CleverMenuItem cleverMenuItem = AddItem(name);
-            cleverMenuItem.name = name;
+            CleverMenuItem cleverMenuItem = AddItem(label);
+            cleverMenuItem.name = label;
             ToggleCustomSettingsAction toggleCustomSettingsAction = cleverMenuItem.gameObject.AddComponent<ToggleCustomSettingsAction>();
             toggleCustomSettingsAction.Setting = setting;
             toggleCustomSettingsAction.Init();
@@ -108,11 +108,11 @@ namespace OriDeModLoader.UIExtensions
             settings.Add(setting);
         }
 
-        public void AddSlider(FloatSetting setting, float min, float max, float step, string tooltip)
+        public void AddSlider(FloatSetting setting, string label, float min, float max, float step, string tooltip)
         {
             // Template is music volume slider
             GameObject clone = Instantiate(SettingsScreen.Instance.transform.Find("highlightFade/pivot/musicVolume").gameObject);
-            clone.gameObject.name = setting.ID;
+            clone.gameObject.name = label;
             foreach (var c in clone.GetComponentsInChildren<MonoBehaviour>())
                 c.enabled = true;
 
@@ -136,15 +136,18 @@ namespace OriDeModLoader.UIExtensions
             slider.Step = step;
             CustomSlider customSlider = slider.gameObject.AddComponent<CustomSlider>();
             customSlider.Setting = setting;
-
+            customSlider.OnSliderChanged += value => dirty = true;
+            
             MessageBox nameTextBox = clone.transform.Find("nameText").GetComponent<MessageBox>();
             nameTextBox.MessageProvider = null;
-            nameTextBox.SetMessage(new MessageDescriptor(setting.ID));
+            nameTextBox.SetMessage(new MessageDescriptor(label));
 
             ConfigureTooltip(clone.GetComponent<CleverMenuItemTooltip>(), tooltip);
 
             foreach (var renderer in clone.GetComponentsInChildren<Renderer>())
                 TransparencyAnimator.Register(renderer.transform);
+
+            settings.Add(setting);
         }
 
         private void ConfigureTooltip(CleverMenuItemTooltip tooltipComponent, string tooltip)

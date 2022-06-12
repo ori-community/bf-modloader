@@ -1,4 +1,5 @@
-﻿using BaseModLib;
+﻿using System;
+using BaseModLib;
 using HarmonyLib;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ namespace OriDeModLoader.UIExtensions
     public class CustomSlider : MonoBehaviour
     {
         public FloatSetting Setting;
+
+        public Action<float> OnSliderChanged;
     }
 
     [HarmonyPatch(typeof(MusicVolumeSlider), "get_Value")]
@@ -35,7 +38,7 @@ namespace OriDeModLoader.UIExtensions
             if (customSlider != null)
             {
                 customSlider.Setting.Value = value;
-                // Settings.SetDirty()
+                customSlider.OnSliderChanged?.Invoke(value);
                 return false;
             }
 
