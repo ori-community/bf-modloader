@@ -1,10 +1,14 @@
-﻿using BaseModLib;
+﻿using System.Collections.Generic;
+using BaseModLib;
 using UnityEngine;
 
 namespace OriDeModLoader.UIExtensions
 {
     public abstract class CustomOptionsScreen : MonoBehaviour
     {
+        private bool dirty;
+        private List<SettingBase> settings = new List<SettingBase>();
+
         public CleverMenuItemLayout layout;
         public CleverMenuItemSelectionManager selectionManager;
         public CleverMenuItemTooltipController tooltipController;
@@ -46,6 +50,15 @@ namespace OriDeModLoader.UIExtensions
 
         public abstract void InitScreen();
 
+        private void OnDisable()
+        {
+            if (dirty)
+            {
+                SettingsFile.Update(settings);
+                dirty = false;
+            }
+        }
+
         private void AddToLayout(CleverMenuItem item)
         {
             layout.AddItem(item);
@@ -78,23 +91,28 @@ namespace OriDeModLoader.UIExtensions
             return component;
         }
 
-        public void AddToggle(BoolSetting setting, string tooltip)
+        public void AddToggle(BoolSetting setting, string name, string tooltip)
         {
-            CleverMenuItem cleverMenuItem = AddItem(setting.Name);
-            cleverMenuItem.name = setting.Name;
+            CleverMenuItem cleverMenuItem = AddItem(name);
+            cleverMenuItem.name = name;
             ToggleCustomSettingsAction toggleCustomSettingsAction = cleverMenuItem.gameObject.AddComponent<ToggleCustomSettingsAction>();
             toggleCustomSettingsAction.Setting = setting;
             toggleCustomSettingsAction.Init();
-            cleverMenuItem.PressedCallback += toggleCustomSettingsAction.Toggle;
+            cleverMenuItem.PressedCallback += () =>
+            {
+                toggleCustomSettingsAction.Toggle();
+                dirty = true;
+            };
 
             ConfigureTooltip(cleverMenuItem.GetComponent<CleverMenuItemTooltip>(), tooltip);
+            settings.Add(setting);
         }
 
         public void AddSlider(FloatSetting setting, float min, float max, float step, string tooltip)
         {
             // Template is music volume slider
             GameObject clone = Instantiate(SettingsScreen.Instance.transform.Find("highlightFade/pivot/musicVolume").gameObject);
-            clone.gameObject.name = setting.Name;
+            clone.gameObject.name = setting.ID;
             foreach (var c in clone.GetComponentsInChildren<MonoBehaviour>())
                 c.enabled = true;
 
@@ -121,7 +139,7 @@ namespace OriDeModLoader.UIExtensions
 
             MessageBox nameTextBox = clone.transform.Find("nameText").GetComponent<MessageBox>();
             nameTextBox.MessageProvider = null;
-            nameTextBox.SetMessage(new MessageDescriptor(setting.Name));
+            nameTextBox.SetMessage(new MessageDescriptor(setting.ID));
 
             ConfigureTooltip(clone.GetComponent<CleverMenuItemTooltip>(), tooltip);
 

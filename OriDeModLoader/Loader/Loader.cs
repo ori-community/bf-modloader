@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using BaseModLib;
 using BFModLoader.Util;
 using HarmonyLib;
 using OriDeModLoader.Util;
@@ -26,6 +27,7 @@ namespace OriDeModLoader
             var harmony = new Harmony("com.oride.modloader");
             harmony.PatchAll();
 
+            SettingsFile.LoadFromFile();
             LoadMods();
         }
 

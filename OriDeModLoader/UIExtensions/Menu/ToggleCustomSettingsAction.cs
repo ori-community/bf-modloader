@@ -32,7 +32,6 @@ namespace OriDeModLoader.UIExtensions
             SetSetting(!IsEnabled);
             PlaySound(IsEnabled);
             Setting.Value = IsEnabled;
-            //RandomizerSettings.SetDirty();
         }
 
         public void SetSetting(bool enabled)
