@@ -21,17 +21,14 @@ namespace OriDeModLoader.UIExtensions
             selectionManager.MenuItems.Clear();
             group.Options.Clear();
             pivot = transform.FindChild("highlightFade/pivot");
+
             foreach (object obj in pivot)
             {
                 Destroy(((Transform)obj).gameObject);
             }
 
-            TransparencyAnimator[] transparencyAnimators = GetComponentsInChildren<TransparencyAnimator>();
-            for (int i = 0; i < transparencyAnimators.Length; i++)
-            {
-                if (transparencyAnimators[i].gameObject != gameObject)
-                    transparencyAnimators[i].Reset();
-            }
+            var transparencyAnimator = transform.Find("highlightFade").GetComponent<TransparencyAnimator>();
+            transparencyAnimator.Reset();
 
             // Tooltip
             Transform originalToolip = SettingsScreen.Instance.transform.Find("highlightFade/pivot/tooltip");
@@ -127,6 +124,9 @@ namespace OriDeModLoader.UIExtensions
             nameTextBox.SetMessage(new MessageDescriptor(setting.Name));
 
             ConfigureTooltip(clone.GetComponent<CleverMenuItemTooltip>(), tooltip);
+
+            foreach (var renderer in clone.GetComponentsInChildren<Renderer>())
+                TransparencyAnimator.Register(renderer.transform);
         }
 
         private void ConfigureTooltip(CleverMenuItemTooltip tooltipComponent, string tooltip)

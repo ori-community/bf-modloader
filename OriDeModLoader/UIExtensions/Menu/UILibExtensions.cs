@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using HarmonyLib;
+using UnityEngine;
 
 namespace OriDeModLoader.UIExtensions
 {
@@ -59,19 +62,19 @@ namespace OriDeModLoader.UIExtensions
 
         internal static void Reset(this TransparencyAnimator animator)
         {
-            var childTransparencyAnimators = Traverse.Create(animator).Field("m_childTransparencyAnimators").GetValue();
-            var cleverMenuItems = Traverse.Create(animator).Field("m_cleverMenuItems").GetValue();
-            var rendererData = Traverse.Create(animator).Field("m_rendererData").GetValue();
-            var renderers = Traverse.Create(animator).Field("m_renderers").GetValue();
+            var childTransparencyAnimators = Traverse.Create(animator).Field("m_childTransparencyAnimators").GetValue<IList>();
+            var cleverMenuItems = Traverse.Create(animator).Field("m_cleverMenuItems").GetValue<IList>();
+            var rendererData = Traverse.Create(animator).Field("m_rendererData").GetValue<IList>();
+            var renderers = Traverse.Create(animator).Field("m_renderers").GetValue<HashSet<Renderer>>();
 
             if (childTransparencyAnimators != null)
-                Traverse.Create(childTransparencyAnimators).Method("Clear");
+                childTransparencyAnimators.Clear();
             if (cleverMenuItems != null)
-                Traverse.Create(cleverMenuItems).Method("Clear");
+                cleverMenuItems.Clear();
             if (rendererData != null)
-                Traverse.Create(rendererData).Method("Clear");
+                rendererData.Clear();
             if (renderers != null)
-                Traverse.Create(renderers).Method("Clear");
+                renderers.Clear();
         }
     }
 }
