@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ 	<PropertyGroup>
+        <TargetFramework>net35</TargetFramework>
+        <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+        <AssemblyVersion>1.0.0.*</AssemblyVersion>
+        <Deterministic>false</Deterministic>        
+    </PropertyGroup>    
+    <ItemGroup>
+      <ProjectReference Include="..\OriDeModloader\OriDeModloader.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Lib.Harmony" Version="2.2.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\..\SteamLibrary\steamapps\common\Ori DE\oriDE_Data\Managed\Assembly-CSharp.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+      <Exec Command="XCOPY &quot;$(TargetDir)\ExampleMod.dll&quot; &quot;C:\moon\Ori and the Blind Forest Mod Loader\mods\&quot; /S /Y" />
+    </Target>
+</Project>

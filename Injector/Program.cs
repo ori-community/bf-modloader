@@ -39,7 +39,7 @@ namespace Injector
             IntPtr modLoaderImage = monoProcess.ImageOpenFromDataFull(assembly);
             IntPtr assemblyPointer = monoProcess.AssemblyLoadFromFull(modLoaderImage);
             IntPtr assemblyImage = monoProcess.AssemblyGetImage(assemblyPointer);
-            IntPtr classPointer = monoProcess.ClassFromName(assemblyImage, "OriDeModLoader", "EntryPoint");
+            IntPtr classPointer = monoProcess.ClassFromName(assemblyImage, "OriDeModLoader.Loader", "EntryPoint");
             IntPtr methodPointer = monoProcess.ClassGetMethodFromName(classPointer, "BootModLoader");
 
             //Boot our ModLoader

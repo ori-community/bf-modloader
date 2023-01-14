@@ -6,5 +6,8 @@
         void Unload();
 
         string Name { get; }
+
+        string ModID { get; }
+        string Version { get; }
     }
 }

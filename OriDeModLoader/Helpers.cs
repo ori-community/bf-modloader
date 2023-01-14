@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace OriDeModLoader
@@ -23,6 +24,17 @@ namespace OriDeModLoader
 
             parts.Reverse();
             return string.Join("/", parts.ToArray());
+        }
+    }
+
+    public static class FileUtil
+    {
+        public static void TouchFile(string fileName)
+        {
+            if (!System.IO.File.Exists(fileName))
+                System.IO.File.Create(fileName).Close();
+
+            System.IO.File.SetLastWriteTimeUtc(fileName, DateTime.UtcNow);
         }
     }
 }

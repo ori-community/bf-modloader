@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace OriDeModLoader
+namespace OriDeModLoader.Loader
 {
     [HarmonyPatch(typeof(GameSettings), nameof(GameSettings.LoadSettings))]
     internal class AfterLoadSettings

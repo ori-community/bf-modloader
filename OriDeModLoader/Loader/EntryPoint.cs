@@ -6,10 +6,9 @@ using System.Reflection;
 using BaseModLib;
 using BFModLoader.Util;
 using HarmonyLib;
-using OriDeModLoader.Util;
 using UnityEngine;
 
-namespace OriDeModLoader
+namespace OriDeModLoader.Loader
 {
     public static class EntryPoint
     {
@@ -28,7 +27,7 @@ namespace OriDeModLoader
             harmony.PatchAll();
 
             SettingsFile.LoadFromFile();
-            LoadMods();
+            new ModLoader().Start();
         }
 
         internal static void ReloadStrings()
