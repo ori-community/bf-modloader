@@ -19,8 +19,6 @@ namespace Injector
 
             var gameExePath = args[0];
 
-            return 0;
-
             var monoProcess = LaunchAndAttach(gameExePath);
             if (monoProcess == null)
             {

@@ -7,6 +7,7 @@ using BaseModLib;
 using BFModLoader.Util;
 using HarmonyLib;
 using OriDeModLoader.Util;
+using SimpleJSON;
 using UnityEngine;
 
 namespace OriDeModLoader
@@ -16,10 +17,12 @@ namespace OriDeModLoader
         private static readonly List<IMod> loadedMods = new List<IMod>();
 
         public static void BootModLoader()
-        { 
+        {
             //Attach a terminal to our game 
             ConsoleUtil.CreateConsole();
             FileUtil.TouchFile("modloader-heartbeat");
+
+            Log("Booting mod loader");
 
             Application.logMessageReceived += LogCallback;
 
@@ -28,7 +31,15 @@ namespace OriDeModLoader
             harmony.PatchAll();
 
             SettingsFile.LoadFromFile();
-            LoadMods();
+
+            try
+            {
+                LoadMods();
+            }
+            catch (Exception ex)
+            {
+                Log(ex.ToString());
+            }
         }
 
         internal static void ReloadStrings()
@@ -39,44 +50,91 @@ namespace OriDeModLoader
 
         private static void LoadMods()
         {
-            const string modsDir = "mods";
-            if (Directory.Exists(modsDir))
+            const string modsDir = "..";
+            string manifestPath = Path.GetFullPath(Path.Combine(modsDir, "manifest.json"));
+
+            if (File.Exists(manifestPath))
             {
-                LoadFromAssemblies(Directory.GetFiles(modsDir, "*.dll"));
+                Log("Reading " + manifestPath);
+
+                var json = JSON.Parse(File.ReadAllText(manifestPath));
+                foreach (var mod in json)
+                {
+                    string id = mod.Key;
+                    if (id == "ModLoader")
+                        continue;
+
+                    if (mod.Value["enabled"].AsBool == true)
+                    {
+                        LoadMod(Path.Combine(Path.Combine(modsDir, id), "mod.json"));
+                    }
+                }
             }
             else
             {
-                Log("Could not find mods directory");
+                Log("Could not find manifest");
             }
         }
 
-        private static void LoadFromAssemblies(IEnumerable<string> modFiles)
+        private static void LoadMod(string modManifestPath)
         {
-            foreach (var s in modFiles)
+            Log("Reading " + modManifestPath);
+
+            var json = JSON.Parse(File.ReadAllText(modManifestPath));
+            string dir = Path.GetDirectoryName(modManifestPath);
+
+            Log(json.ToString());
+
+            if (json["name"] == "Mod Loader")
+                return;
+
+            var entrypoint = json["entrypoint"];
+            if (entrypoint == null)
+                return;
+
+            // Load mod dependencies
+            // TODO find a way to avoid this
+            var preload = json["preload"];
+            if (preload != null)
             {
-                Log("Loading " + s);
-                try
+                var preloadArray = preload.AsArray;
+                foreach (var str in preloadArray)
                 {
-                    var assembly = Assembly.LoadFrom(s);
-                    var modTypes = assembly.GetTypes().Where(t => typeof(IMod).IsAssignableFrom(t));
-
-                    foreach (var modType in modTypes)
-                    {
-                        Log($"Instantiating {modType}");
-                        var mod = (IMod)Activator.CreateInstance(modType);
-                        loadedMods.Add(mod);
-
-                        Strings.InitSingle(mod.Name, Language.English); // English is primary fallback
-
-                        Log($"Initialising {mod.Name}");
-                        mod.Init();
-                    }
+                    // ...
                 }
-                catch (Exception ex)
+            }
+
+            foreach (var dllNode in entrypoint.AsArray)
+            {
+                var path = dllNode.Value.Value;
+                LoadModAssembly(Path.Combine(dir, path));
+            }
+        }
+
+        private static void LoadModAssembly(string path)
+        {
+            Log("Loading " + path);
+            try
+            {
+                var assembly = Assembly.LoadFrom(path);
+                var modTypes = assembly.GetTypes().Where(t => typeof(IMod).IsAssignableFrom(t));
+
+                foreach (var modType in modTypes)
                 {
-                    Log($"Failed to load mod: {ex}");
-                    throw;
+                    Log($"Instantiating {modType}");
+                    var mod = (IMod)Activator.CreateInstance(modType);
+                    loadedMods.Add(mod);
+
+                    Strings.InitSingle(mod.Name, Language.English); // English is primary fallback
+
+                    Log($"Initialising {mod.Name}");
+                    mod.Init();
                 }
+            }
+            catch (Exception ex)
+            {
+                Log($"Failed to load mod: {ex}");
+                throw;
             }
         }
 

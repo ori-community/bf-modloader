@@ -13,10 +13,6 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
 
-  <!-- This helps when using VS to build but it doesn't work with the build script -->
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <ProjectReference Include="..\OriDeModLoader\OriDeModLoader.csproj" />
-  </ItemGroup>
 
   <ItemGroup>
     <Reference Include="MInject, Version=1.0.6540.41846, Culture=neutral, PublicKeyToken=null">
