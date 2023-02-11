@@ -23,17 +23,6 @@ jobs:
       - name: Build
         run: .\build.ps1
 
-      - name: Tag main branch
-        uses: actions/github-script@v5
-        with:
-          script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'refs/tags/${{ github.event.inputs.version }}',
-              sha: context.sha
-            })
-
       - name: Publish release
         uses: softprops/action-gh-release@v1
         with:
