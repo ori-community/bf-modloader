@@ -6,11 +6,17 @@ using System.Reflection;
 using BFModLoader.ModLoader;
 using HarmonyLib;
 using OriDeModLoader.BFModLoader.ModLoader;
+using OriDeModLoader.UIExtensions;
 
 namespace OriDeModLoader.Loader
 {
     public class ModLoader
     {
+        private ModLoader()
+        {
+        }
+
+        public static ModLoader Instance { get; } = new ModLoader();
         private readonly Dictionary<string, ModState> _loadedModsById = new Dictionary<string, ModState>();
         private readonly Dictionary<string, ModState> _loadedModsByFile = new Dictionary<string, ModState>();
 
@@ -49,7 +55,7 @@ namespace OriDeModLoader.Loader
         }
         
          public void LoadMod(string file, bool allowReload = false)
-        {
+         {
             Logger.Log("Loading assembly: " + file);
             if (!IsMod(file))
             {
@@ -74,57 +80,88 @@ namespace OriDeModLoader.Loader
 
                 //Loading from in-memory Byte-Array will not place a lock on the file
                 var modAssembly = Assembly.Load(File.ReadAllBytes(file));
-                var modType = modAssembly.GetTypes()
-                    .FirstOrDefault(type => !type.IsAbstract && typeof(IMod).IsAssignableFrom(type))?.FullName;
+                var modTypes = modAssembly.GetTypes()
+                    .Where(type => !type.IsAbstract && typeof(IMod).IsAssignableFrom(type)).ToList();
 
-                if (modType != null && modAssembly.CreateInstance(modType) is IMod mod)
-                {
-                    if (_loadedModsById.TryGetValue(mod.ModID, out ModState loadedMod))
-                    {
-                        if (allowReload)
-                        {
-                            UnloadMod(loadedMod);
-                        }
-                        else
-                        {
-                            Logger.Log("Attempted to load mod " + mod.ModID + " multiple times", LogLevel.Warn);
-                            return;
-                        }
-                    }
-
-                    Harmony.DEBUG = true;
-                    var harmony = new Harmony(mod.ModID + Guid.NewGuid());
-                    _loadedModsById[mod.ModID] = new ModState
-                    {
-                        Mod = mod,
-                        Harmony = harmony,
-                        File = file,
-                    };
-                    _loadedModsByFile[file] = _loadedModsById[mod.ModID];
-
-                    harmony.PatchAll(modAssembly);
-                    mod.Init();
-                    Logger.Log("Loaded mod " + mod.ModID + " with version " + mod.Version);
-                }
-                else
-                {
+                if (!modTypes.Any())
                     Logger.Log("No mod present in assembly " + file, LogLevel.Error);
+                
+                foreach (var modType in modTypes)
+                {
+                    if (modAssembly.CreateInstance(modType.FullName) is IMod mod)
+                    {
+                        if (_loadedModsById.TryGetValue(mod.ModID, out ModState loadedMod))
+                        {
+                            if (allowReload)
+                            {
+                                UnloadMod(loadedMod);
+                            }
+                            else
+                            {
+                                Logger.Log("Attempted to load mod " + mod.ModID + " multiple times", LogLevel.Warn);
+                                continue;
+                            }
+                        }
+
+                        Harmony.DEBUG = true;
+                        var harmony = new Harmony(mod.ModID + Guid.NewGuid());
+                        var state = new ModState(mod, harmony, file);
+                        _loadedModsById[mod.ModID] = state;
+                        _loadedModsByFile[file] = state;
+                        AccessTools.GetTypesFromAssembly(modAssembly).Where(type => type.Namespace.StartsWith(modType.Namespace)).Do(type =>
+                            harmony.CreateClassProcessor(type).Patch());
+                        if (mod.GetSettings().Count > 0)
+                        {
+                            state.Settings = CustomMenuManager.RegisterOptionsScreen<SettingsListOptionScreen>(mod.Name, 3, options => options.Init(mod.GetSettings()));
+                        }
+                        mod.Init();
+                        Logger.Log("Loaded mod " + mod.ModID + " with version " + mod.Version);
+                    }
+                
+                    else
+                    {
+                        Logger.Log("Could not instantiate mod of type " + modType, LogLevel.Error);
+                    }
                 }
             }
             catch (ReflectionTypeLoadException e)
             {
                 Logger.Log(e, fullLog: true);
+                Logger.Log(e.Data.ToString());
+                try
+                {
+                    foreach (var eType in e.Types)
+                    {
+                        Logger.Log(eType.AssemblyQualifiedName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(ex, fullLog: true);
+                }
+
                 foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
                 {
                     Logger.Log(assembly.FullName);
                 }
             }
+            catch (Exception e)
+            {
+                
+                Logger.Log(e, fullLog: true);
+                
+            }
         }
 
         public void UnloadMod(ModState modState)
         {
+            if (modState.Settings is CustomOptionsScreenDef def)
+            {
+                CustomMenuManager.UnregisterSettingsScreen(def);
+            }
+
             modState.Mod.Unload();
-            modState.Harmony.UnpatchAll();
+            modState.Harmony.UnpatchAll(modState.Harmony.Id);
             _loadedModsById.Remove(modState.Mod.ModID);
             _loadedModsByFile.Remove(modState.File);
 

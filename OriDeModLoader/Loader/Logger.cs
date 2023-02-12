@@ -33,6 +33,9 @@ namespace BFModLoader.ModLoader
                 Console.WriteLine("[" + level + "] " + e.GetType().Name + " - " + e.Message);
                 Console.WriteLine(e.StackTrace);
 
+                if (e.InnerException == exception)
+                    break;
+                
                 exception = e.InnerException;
             }
         }

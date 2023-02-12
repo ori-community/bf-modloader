@@ -1,7 +1,9 @@
-﻿using System;
-using BFModLoader.ModLoader;
+﻿using System.Collections.Generic;
+using BaseModLib;
 using HarmonyLib;
 using OriDeModLoader;
+using UnityEngine;
+using Logger = BFModLoader.ModLoader.Logger;
 
 namespace ExampleMod
 {
@@ -11,6 +13,9 @@ namespace ExampleMod
         public void Init()
         {
             Logger.Log("Loaded");
+
+            KeySetting.OnValueChanged += val =>
+                Logger.Log(KeySetting.ToString());
         }
 
         public void Unload()
@@ -18,11 +23,21 @@ namespace ExampleMod
             Logger.Log("Killed");
         }
 
-        public string Name { get; }
+        public virtual void FixedUpdate()
+        {
+            if (KeySetting.IsJustPressed()){
+                Logger.Log("Just Pressed!");
+            }else if (KeySetting.IsPressed()){
+                Logger.Log("Held!");
+            }
+        }
+
+        public string Name => "Example Mod";
         public string ModID => "xemsys.bf.examplemod";
-        
-        /*protected override List<SettingBase> GetSettings() => new List<SettingBase> {FlipSetting};
-        public static readonly BoolSetting FlipSetting = new BoolSetting("example.flip", "Make Ori always/never jump", false);*/
+
+        public List<SettingBase> GetSettings() => new List<SettingBase> {FlipSetting, KeySetting};
+        public static readonly BoolSetting FlipSetting = new BoolSetting("example.flip", "Always flip", "Make Ori always/never flip", false);
+        public static readonly KeybindSetting KeySetting = new KeybindSetting("example.button", "Random Bind", "Testing Binds", KeyCode.A);
     }
 
 
@@ -30,10 +45,16 @@ namespace ExampleMod
     [HarmonyPatch("get_HasSharplyTurnedAround")]
     class FlipPatch
     {
-        static bool Prefix(SeinJump __instance, ref bool __result)
+        static bool Prefix(ref bool __result)
         {
-            __result = true;//Mod.FlipSetting.Value;
+            if (!Mod.FlipSetting.Value)
+            {
+                return true;
+            }
+
+            __result = true;
             return false;
+
         }
     }
 }

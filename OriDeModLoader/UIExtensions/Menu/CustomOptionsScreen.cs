@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BaseModLib;
 using UnityEngine;
 
@@ -15,7 +16,9 @@ namespace OriDeModLoader.UIExtensions
         public Transform pivot;
         public CleverMenuItemGroup group;
 
-        public virtual void Awake()
+        public abstract void InitScreen();
+
+        public virtual void Start()
         {
             // Layout and selection manager
             layout = GetComponent<CleverMenuItemLayout>();
@@ -47,8 +50,6 @@ namespace OriDeModLoader.UIExtensions
             InitScreen();
             selectionManager.SetCurrentItem(0);
         }
-
-        public abstract void InitScreen();
 
         private void OnDisable()
         {
@@ -91,10 +92,10 @@ namespace OriDeModLoader.UIExtensions
             return component;
         }
 
-        public void AddToggle(BoolSetting setting, string label, string tooltip)
+        public void AddToggle(BoolSetting setting)
         {
-            CleverMenuItem cleverMenuItem = AddItem(label);
-            cleverMenuItem.name = label;
+            CleverMenuItem cleverMenuItem = AddItem(setting.Label);
+            cleverMenuItem.name = setting.Label;
             ToggleCustomSettingsAction toggleCustomSettingsAction = cleverMenuItem.gameObject.AddComponent<ToggleCustomSettingsAction>();
             toggleCustomSettingsAction.Setting = setting;
             toggleCustomSettingsAction.Init();
@@ -104,15 +105,15 @@ namespace OriDeModLoader.UIExtensions
                 dirty = true;
             };
 
-            ConfigureTooltip(cleverMenuItem.GetComponent<CleverMenuItemTooltip>(), tooltip);
+            ConfigureTooltip(cleverMenuItem.GetComponent<CleverMenuItemTooltip>(), setting.Tooltip);
             settings.Add(setting);
         }
 
-        public void AddSlider(FloatSetting setting, string label, float min, float max, float step, string tooltip)
+        public void AddSlider(FloatSetting setting)
         {
             // Template is music volume slider
             GameObject clone = Instantiate(SettingsScreen.Instance.transform.Find("highlightFade/pivot/musicVolume").gameObject);
-            clone.gameObject.name = label;
+            clone.gameObject.name = setting.Label;
             foreach (var c in clone.GetComponentsInChildren<MonoBehaviour>())
                 c.enabled = true;
 
@@ -131,25 +132,36 @@ namespace OriDeModLoader.UIExtensions
             };
             group.AddItem(cleverMenuItem, slider);
 
-            slider.MinValue = min;
-            slider.MaxValue = max;
-            slider.Step = step;
+            slider.MinValue = setting.Min;
+            slider.MaxValue = setting.Max;
+            slider.Step = setting.Step;
             CustomSlider customSlider = slider.gameObject.AddComponent<CustomSlider>();
             customSlider.Setting = setting;
             customSlider.OnSliderChanged += value => dirty = true;
             
             MessageBox nameTextBox = clone.transform.Find("nameText").GetComponent<MessageBox>();
             nameTextBox.MessageProvider = null;
-            nameTextBox.SetMessage(new MessageDescriptor(label));
+            nameTextBox.SetMessage(new MessageDescriptor(setting.Label));
 
-            ConfigureTooltip(clone.GetComponent<CleverMenuItemTooltip>(), tooltip);
+            ConfigureTooltip(clone.GetComponent<CleverMenuItemTooltip>(), setting.Tooltip);
 
             foreach (var renderer in clone.GetComponentsInChildren<Renderer>())
                 TransparencyAnimator.Register(renderer.transform);
 
             settings.Add(setting);
         }
-
+        public void AddKeybind(KeybindSetting setting)
+        {
+            CleverMenuItem cleverMenuItem = AddItem(setting.Label);
+            cleverMenuItem.gameObject.name = "Keybind (" + setting.Label + ")";
+            KeybindControl kc = cleverMenuItem.gameObject.AddComponent<KeybindControl>();
+            kc.Init(() => setting.Value.Select(it => it.ToArray()).ToArray(), c => setting.Value = c.Select(code => code.AsEnumerable()), this);
+            cleverMenuItem.PressedCallback += delegate ()
+            {
+                kc.BeginEditing();
+            };
+        }
+        
         private void ConfigureTooltip(CleverMenuItemTooltip tooltipComponent, string tooltip)
         {
             var tooltipMessageProvider = ScriptableObject.CreateInstance<BasicMessageProvider>();

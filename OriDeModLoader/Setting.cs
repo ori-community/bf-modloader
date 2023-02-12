@@ -1,12 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Core;
+using UnityEngine;
+using Input = UnityEngine.Input;
 
 namespace BaseModLib
 {
     public abstract class SettingBase
     {
-        public SettingBase(string id)
+        //if we want translations, I'd just turn those two into an identifier
+        public SettingBase(string id, string label, string tooltip)
         {
-            ID = id;
+            Id = id;
+            Label = label;
+            Tooltip = tooltip;
         }
 
         public abstract void Parse(string value);
@@ -15,12 +23,14 @@ namespace BaseModLib
 
         public abstract void Reset();
 
-        public string ID;
+        public string Id;
+        public string Label;
+        public string Tooltip;
     }
 
     public abstract class Setting<T> : SettingBase
     {
-        public Setting(string id, T defaultValue) : base(id)
+        public Setting(string id, string label, string tooltip, T defaultValue) : base(id, label, tooltip)
         {
             if (id.Contains(":"))
                 throw new ArgumentException("Setting id cannot contain the following characters: \":\"", nameof(id));
@@ -61,7 +71,7 @@ namespace BaseModLib
 
     public class BoolSetting : Setting<bool>
     {
-        public BoolSetting(string id, bool defaultValue) : base(id, defaultValue) { }
+        public BoolSetting(string id, string label, string tooltip, bool defaultValue) : base(id, label, tooltip, defaultValue) { }
 
         public override void Parse(string value)
         {
@@ -71,11 +81,65 @@ namespace BaseModLib
 
     public class FloatSetting : Setting<float>
     {
-        public FloatSetting(string id, float defaultValue) : base(id, defaultValue) { }
+        public float Min;
+        public float Max;
+        public float Step;
+
+        public FloatSetting(string id, float min, float max, float step, string label, string tooltip,
+            float defaultValue) : base(id, label, tooltip, defaultValue)
+        {
+            Min = min;
+            Max = max;
+            Step = step;
+        }
 
         public override void Parse(string value)
         {
             _value = float.Parse(value);
+        }
+    }
+
+    public class KeybindSetting : Setting<IEnumerable<IEnumerable<KeyCode>>>
+    {
+        public KeybindSetting(string id, string label, string tooltip, KeyCode defaultValue) :
+            this(id, label, tooltip, new[]{new[] {defaultValue}.AsEnumerable()})
+        {
+        }     public KeybindSetting(string id, string label, string tooltip, IEnumerable<KeyCode> defaultValue) :
+            this(id, label, tooltip, new[]{defaultValue})
+        {
+        }
+
+        public KeybindSetting(string id, string label, string tooltip, IEnumerable<IEnumerable<KeyCode>> defaultValue) : base(id, label, tooltip, defaultValue)
+        {
+        }
+
+        public override void Parse(string value)
+        {
+            string[] groups = value.Split(new[]
+            {
+                ", "
+            }, StringSplitOptions.None);
+            IEnumerable<IEnumerable<KeyCode>> binds = groups.Select(a => a.Split(new[]
+            {
+                "+"
+            }, StringSplitOptions.None).Select(code => (KeyCode)(Enum.Parse(typeof(KeyCode), code))));
+            _value = binds;
+        }
+        public override string ToString()
+        {
+            return String.Join(",",
+                Value.Select(group 
+                    => String.Join("+", group.Select(key => key.ToString()).ToArray())).ToArray());
+        }
+
+        public bool IsPressed()
+        {
+            return Value.Any(bind => bind.All(Input.GetKey));
+        }
+
+        public bool IsJustPressed()
+        {
+            return Value.Any(bind => bind.All(Input.GetKey) && bind.Any(Input.GetKeyDown));
         }
     }
 }

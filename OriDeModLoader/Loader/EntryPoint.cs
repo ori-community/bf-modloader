@@ -27,7 +27,7 @@ namespace OriDeModLoader.Loader
             harmony.PatchAll();
 
             SettingsFile.LoadFromFile();
-            new ModLoader().Start();
+            ModLoader.Instance.Start();
         }
 
         internal static void ReloadStrings()
