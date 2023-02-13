@@ -17,9 +17,7 @@ namespace Injector
                 return 1;
             }
 
-            var gameExePath = args[0];
-
-            var monoProcess = LaunchAndAttach(gameExePath);
+            var monoProcess = LaunchAndAttach(args[0]);
             if (monoProcess == null)
             {
                 Console.WriteLine("Error attaching process");

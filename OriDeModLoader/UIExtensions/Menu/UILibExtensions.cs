@@ -27,7 +27,8 @@ namespace OriDeModLoader.UIExtensions
         {
             CleverMenuItem cleverMenuItem = UnityEngine.Object.Instantiate<CleverMenuItem>(selectionManager.MenuItems[0]);
             cleverMenuItem.gameObject.name = label;
-            cleverMenuItem.transform.SetParent(selectionManager.MenuItems[1].transform.parent);
+            cleverMenuItem.transform.SetParentMaintainingRotationAndScale(selectionManager.MenuItems[1].transform.parent);
+            cleverMenuItem.Pressed = null;
             if (onPress != null)
                 cleverMenuItem.PressedCallback += onPress;
             cleverMenuItem.gameObject.GetComponentInChildren<MessageBox>().SetMessage(new MessageDescriptor(label));

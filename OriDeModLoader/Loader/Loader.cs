@@ -29,6 +29,7 @@ namespace OriDeModLoader
             //Patch time
             var harmony = new Harmony("com.oride.modloader");
             harmony.PatchAll();
+            TitleScreenModMenu.Init();
 
             SettingsFile.LoadFromFile();
 
