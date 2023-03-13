@@ -18,8 +18,6 @@ namespace OriDeModLoader
 
         public static void BootModLoader()
         {
-            //Attach a terminal to our game 
-            ConsoleUtil.CreateConsole();
             FileUtil.TouchFile("modloader-heartbeat");
 
             Log("Booting mod loader");
@@ -41,6 +39,13 @@ namespace OriDeModLoader
             {
                 Log(ex.ToString());
             }
+        }
+
+        public static void BootModLoaderWithDebug()
+        {
+            //Attach a terminal to our game
+            ConsoleUtil.CreateConsole();
+            BootModLoader();
         }
 
         internal static void ReloadStrings()

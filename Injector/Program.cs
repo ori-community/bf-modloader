@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using MInject;
@@ -24,6 +25,8 @@ namespace Injector
                 return 1;
             }
 
+            bool debug = args.Contains("--debug");
+
             //Load both required DLLs
             byte[] harmony = File.ReadAllBytes("0harmony.dll");
             byte[] assembly = File.ReadAllBytes("OriDeModLoader.dll");
@@ -42,7 +45,7 @@ namespace Injector
             IntPtr assemblyPointer = monoProcess.AssemblyLoadFromFull(modLoaderImage);
             IntPtr assemblyImage = monoProcess.AssemblyGetImage(assemblyPointer);
             IntPtr classPointer = monoProcess.ClassFromName(assemblyImage, "OriDeModLoader", "EntryPoint");
-            IntPtr methodPointer = monoProcess.ClassGetMethodFromName(classPointer, "BootModLoader");
+            IntPtr methodPointer = monoProcess.ClassGetMethodFromName(classPointer, debug ? "BootModLoaderWithDebug" : "BootModLoader");
 
             //Boot our ModLoader
             monoProcess.RuntimeInvoke(methodPointer);
