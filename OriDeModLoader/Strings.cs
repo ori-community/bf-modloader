@@ -11,8 +11,8 @@ namespace OriDeModLoader
         {
             // Game/Mods/strings/rando/en.txt
             // Game/Override/strings/rando/en.txt
-            Load($"Mods/strings/{section}/{language}.txt");
-            Load($"Override/strings/{section}/{language}.txt");
+            Load($"../{section}/strings/{language}.txt");
+            //Load($"Override/strings/{section}/{language}.txt");
         }
 
         private static void Load(string path)

@@ -14,7 +14,7 @@ namespace OriDeModLoader
 {
     public static class EntryPoint
     {
-        private static readonly List<IMod> loadedMods = new List<IMod>();
+        internal static readonly List<LoadedModInfo> loadedMods = new List<LoadedModInfo>();
 
         public static void BootModLoader()
         {
@@ -51,7 +51,7 @@ namespace OriDeModLoader
         internal static void ReloadStrings()
         {
             foreach (var mod in loadedMods)
-                Strings.InitSingle(mod.Name, GameSettings.Instance.Language);
+                Strings.InitSingle(mod.DirName, GameSettings.Instance.Language);
         }
 
         private static void LoadMods()
@@ -129,9 +129,10 @@ namespace OriDeModLoader
                 {
                     Log($"Instantiating {modType}");
                     var mod = (IMod)Activator.CreateInstance(modType);
-                    loadedMods.Add(mod);
+                    var modInfo = new LoadedModInfo(mod, path);
+                    loadedMods.Add(modInfo);
 
-                    Strings.InitSingle(mod.Name, Language.English); // English is primary fallback
+                    Strings.InitSingle(modInfo.DirName, Language.English); // English is primary fallback
 
                     Log($"Initialising {mod.Name}");
                     mod.Init();
