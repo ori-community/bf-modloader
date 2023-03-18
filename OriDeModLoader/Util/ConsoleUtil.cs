@@ -110,11 +110,12 @@ namespace BFModLoader.Util
 
             //TODO this should *probably* be loaded from config/calced from monitor size
             //These just put it on my seconds monitor - xem :p
-            const int xTo = 3000;
-            const int yTo = 200; 
-            var widthFrom = rectFrom.Right - rectFrom.Left; 
-            var heightFrom = rectFrom.Bottom - rectFrom.Top;
-            MoveWindow(hWndFrom, xTo, yTo, widthFrom, heightFrom, true);
+            // Sorry xem but it doesn't work for anyone else :(
+            //const int xTo = 3000;
+            //const int yTo = 200; 
+            //var widthFrom = rectFrom.Right - rectFrom.Left; 
+            //var heightFrom = rectFrom.Bottom - rectFrom.Top;
+            //MoveWindow(hWndFrom, xTo, yTo, widthFrom, heightFrom, true);
             
             var handle = FindWindow(null, "Ori And The Blind Forest: Definitive Edition");
             ShowWindow(handle, ShowWindowEnum.Restore);
