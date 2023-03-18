@@ -6,20 +6,20 @@ namespace BaseModLib
 {
     public static class SettingsFile
     {
-        private const string FileName = "settings.txt";
+        private static string FilePath => Path.GetFullPath(Path.Combine("..", "settings.txt"));
 
         private static Dictionary<string, string> settingsMap = new Dictionary<string, string>();
 
         public static void LoadFromFile()
         {
-            if (!File.Exists(FileName))
+            if (!File.Exists(FilePath))
                 return;
 
             settingsMap = new Dictionary<string, string>();
 
             try
             {
-                using (var file = new StreamReader(FileName))
+                using (var file = new StreamReader(FilePath))
                 {
                     while (!file.EndOfStream)
                     {
@@ -43,7 +43,7 @@ namespace BaseModLib
 
         public static void WriteToFile()
         {
-            using (var file = new StreamWriter(FileName, false))
+            using (var file = new StreamWriter(FilePath, false))
             {
                 foreach (var setting in settingsMap)
                     file.WriteLine($"{setting.Key}: {setting.Value}");

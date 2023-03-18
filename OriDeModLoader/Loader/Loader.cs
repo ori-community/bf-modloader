@@ -84,12 +84,8 @@ namespace OriDeModLoader
 
         private static void LoadMod(string modManifestPath)
         {
-            Log("Reading " + modManifestPath);
-
             var json = JSON.Parse(File.ReadAllText(modManifestPath));
             string dir = Path.GetDirectoryName(modManifestPath);
-
-            Log(json.ToString());
 
             if (json["name"] == "Mod Loader")
                 return;
@@ -127,7 +123,6 @@ namespace OriDeModLoader
 
                 foreach (var modType in modTypes)
                 {
-                    Log($"Instantiating {modType}");
                     var mod = (IMod)Activator.CreateInstance(modType);
                     var modInfo = new LoadedModInfo(mod, path);
                     loadedMods.Add(modInfo);
