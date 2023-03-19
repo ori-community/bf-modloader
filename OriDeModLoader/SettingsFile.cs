@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using OriDeModLoader.Util;
 
 namespace BaseModLib
 {
     public static class SettingsFile
     {
-        private static string FilePath => Path.GetFullPath(Path.Combine("..", "settings.txt"));
+        private static string FilePath => PathUtil.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ori and the Blind Forest DE", "mod_settings.txt");
 
         private static Dictionary<string, string> settingsMap = new Dictionary<string, string>();
 
