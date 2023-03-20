@@ -56,8 +56,8 @@ namespace OriDeModLoader
 
         private static void LoadMods()
         {
-            const string modsDir = "..";
-            string manifestPath = Path.GetFullPath(Path.Combine(modsDir, "manifest.json"));
+            string modsDir = PathUtil.MakeAbsolute("..");
+            string manifestPath = Path.Combine(modsDir, "manifest.json");
 
             if (File.Exists(manifestPath))
             {
@@ -72,7 +72,7 @@ namespace OriDeModLoader
 
                     if (mod.Value["enabled"].AsBool == true)
                     {
-                        LoadMod(Path.Combine(Path.Combine(modsDir, id), "mod.json"));
+                        LoadMod(PathUtil.Combine(modsDir, id, "mod.json"));
                     }
                 }
             }
@@ -131,6 +131,7 @@ namespace OriDeModLoader
 
                     Log($"Initialising {mod.Name}");
                     mod.Init();
+                    Log($"Initialised {mod.Name}");
                 }
             }
             catch (Exception ex)

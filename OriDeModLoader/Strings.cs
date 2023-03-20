@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using OriDeModLoader.Util;
 
 namespace OriDeModLoader
 {
@@ -7,11 +8,9 @@ namespace OriDeModLoader
     {
         private static readonly Dictionary<string, string> strings = new Dictionary<string, string>();
 
-        internal static void InitSingle(string section, Language language)
+        internal static void InitSingle(string modDir, Language language)
         {
-            // Game/Mods/strings/rando/en.txt
-            // Game/Override/strings/rando/en.txt
-            Load($"../{section}/strings/{language}.txt");
+            Load(PathUtil.MakeAbsolute($"../{modDir}/strings/{language}.txt"));
             //Load($"Override/strings/{section}/{language}.txt");
         }
 
