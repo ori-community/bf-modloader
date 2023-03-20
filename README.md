@@ -1,14 +1,12 @@
 # Ori DE Mod Loader
 
-Loads any mods in the `Mods` folder at startup. Injected by [MInject](https://github.com/EquiFox/MInject) via the Launcher project.
+Loads mods with [MInject](https://github.com/EquiFox/MInject) or [Doorstop](https://github.com/NeighTools/UnityDoorstop)
 
 ## Usage for users
 
-Extract anywhere.
+Just use the [Mod Manager](https://github.com/Kirefel/bf-mod-manager)
 
-Install mods by adding them to the `Mods` folder.
-
-Run `Injector.exe` to launch the game with mods.
+TODO make manual installation a bit nicer
 
 ## Usage for developers
 

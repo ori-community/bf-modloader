@@ -6,6 +6,7 @@ dotnet publish Injector/Injector.csproj -c Release -o release
 
 cp .\build\OriDeModLoader.dll .\release\
 cp .\build\0Harmony.dll .\release\
+cp .\winhttp.dll .\release\
 
 rm .\OriDeModLoader.zip -ErrorAction SilentlyContinue
 Compress-Archive .\release\* .\OriDeModLoader.zip
