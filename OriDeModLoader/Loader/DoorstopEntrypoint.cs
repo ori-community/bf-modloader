@@ -17,11 +17,8 @@ namespace Doorstop
 
         private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
         {
-            TestLog($"Loaded {args.LoadedAssembly.FullName}");
-            if (args.LoadedAssembly.GetName().Name == "Assembly-CSharp")
+            if (args.LoadedAssembly.GetName().Name == "System")
             {
-                TestLog("Loading loader");
-
                 bool debug = Environment.GetCommandLineArgs().Contains("--debug");
 
                 if (debug)
@@ -29,12 +26,6 @@ namespace Doorstop
                 else
                     OriDeModLoader.EntryPoint.BootModLoader();
             }
-        }
-
-        public static void TestLog(string message)
-        {
-            using (var sw = new StreamWriter(@"G:\Games\Steam\steamapps\common\Ori DE\test.log", append:true))
-                sw.WriteLine($"{DateTime.Now:HH:mm:ss} {message}");
         }
     }
 }
