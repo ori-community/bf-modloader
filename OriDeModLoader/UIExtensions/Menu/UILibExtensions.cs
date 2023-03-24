@@ -77,5 +77,30 @@ namespace OriDeModLoader.UIExtensions
             if (renderers != null)
                 renderers.Clear();
         }
+
+        public static void SetValueText(this CleverMenuItem item, string text)
+        {
+            var textTransform = item.transform.Find("text/stateText");
+            if (!textTransform)
+                return;
+
+            var messageBox = textTransform.GetComponent<MessageBox>();
+            if (!messageBox)
+                return;
+
+            messageBox.MessageProvider = null;
+            messageBox.SetMessage(new MessageDescriptor(text));
+        }
+
+        public static Transform EmbedChildren(this Transform transform)
+        {
+            var newTransform = new GameObject("container").transform;
+            newTransform.parent = transform;
+            newTransform.localPosition = Vector3.zero;
+            newTransform.localScale = Vector3.one;
+            for (int i = transform.childCount - 1; i >= 0; i--)
+                transform.GetChild(i).SetParentMaintainingLocalTransform(newTransform);
+            return newTransform;
+        }
     }
 }

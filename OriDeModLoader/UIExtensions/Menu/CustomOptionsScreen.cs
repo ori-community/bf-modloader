@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BaseModLib;
 using UnityEngine;
@@ -91,6 +92,20 @@ namespace OriDeModLoader.UIExtensions
             }
             gameObject.transform.Find("text/nameText").GetComponent<MessageBox>().SetMessage(new MessageDescriptor(label));
             return component;
+        }
+
+        public CleverMenuItem AddButton(string label, string tooltip, Action onPressed)
+        {
+            var item = AddItem("");
+            item.SetValueText(label);
+            ConfigureTooltip(item.GetComponent<CleverMenuItemTooltip>(), tooltip);
+
+            //foreach (Transform child in item.transform)
+            //    child.position -= new Vector3(2, 0, 0);
+
+            item.PressedCallback += onPressed;
+
+            return item;
         }
 
         public void AddToggle(BoolSetting setting, string label, string tooltip)
