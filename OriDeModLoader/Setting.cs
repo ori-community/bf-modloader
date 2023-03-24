@@ -4,6 +4,7 @@ namespace BaseModLib
 {
     public abstract class SettingBase
     {
+        /// <param name="id">If null, the setting won't be saved to or read from file</param>
         public SettingBase(string id)
         {
             ID = id;
@@ -22,15 +23,18 @@ namespace BaseModLib
     {
         public Setting(string id, T defaultValue) : base(id)
         {
-            if (id.Contains(":"))
+            if (!string.IsNullOrEmpty(id) && id.Contains(":"))
                 throw new ArgumentException("Setting id cannot contain the following characters: \":\"", nameof(id));
 
             Default = defaultValue;
             Value = Default;
 
-            string savedValue = SettingsFile.GetValue(id);
-            if (savedValue != null)
-                Parse(savedValue); // TODO handle error
+            if (!string.IsNullOrEmpty(id))
+            {
+                string savedValue = SettingsFile.GetValue(id);
+                if (savedValue != null)
+                    Parse(savedValue); // TODO handle error
+            }
         }
 
         public override string ToString()
@@ -76,6 +80,16 @@ namespace BaseModLib
         public override void Parse(string value)
         {
             _value = float.Parse(value);
+        }
+    }
+
+    public class IntSetting : Setting<int>
+    {
+        public IntSetting(string id, int defaultValue) : base(id, defaultValue) { }
+
+        public override void Parse(string value)
+        {
+            _value = int.Parse(value);
         }
     }
 }

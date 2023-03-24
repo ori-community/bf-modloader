@@ -168,7 +168,7 @@ namespace OriDeModLoader.UIExtensions
         }
 
         static Transform resolutionTemplate = null;
-        public void AddDropdown(string label, string tooltip, int defaultSelection, OptionsListItem[] options)
+        public void AddDropdown(IntSetting intSetting, string label, string tooltip, OptionsListItem[] options)
         {
             if (!resolutionTemplate)
             {
@@ -196,7 +196,7 @@ namespace OriDeModLoader.UIExtensions
 
             MessageBox valueTextBox = clone.transform.Find("text/stateText").GetComponent<MessageBox>();
             valueTextBox.MessageProvider = null;
-            valueTextBox.SetMessage(new MessageDescriptor(options[defaultSelection].label));
+            valueTextBox.SetMessage(new MessageDescriptor(options[intSetting.Value].label));
 
 
             // Replace the resolution options component with our own generic one
@@ -219,9 +219,8 @@ namespace OriDeModLoader.UIExtensions
             dropdownList.OnScreenLimit = 16;
             dropdownList.ScrollingSpeed = 8;
             dropdownList.items = options;
-            dropdownList.defaultSelection = defaultSelection;
             dropdownList.dismissOnChoose = true;
-
+            dropdownList.intSetting = intSetting;
 
             DestroyImmediate(resolutionOptions);
 

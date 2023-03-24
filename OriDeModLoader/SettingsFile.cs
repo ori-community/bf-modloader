@@ -56,7 +56,10 @@ namespace BaseModLib
         public static void Update(IEnumerable<SettingBase> settings)
         {
             foreach (var setting in settings)
-                settingsMap[setting.ID] = setting.ToString();
+            {
+                if (!string.IsNullOrEmpty(setting.ID))
+                    settingsMap[setting.ID] = setting.ToString();
+            }
 
             WriteToFile();
         }
