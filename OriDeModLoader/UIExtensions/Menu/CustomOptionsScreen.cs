@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BaseModLib;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace OriDeModLoader.UIExtensions
 {
@@ -137,7 +139,7 @@ namespace OriDeModLoader.UIExtensions
             CustomSlider customSlider = slider.gameObject.AddComponent<CustomSlider>();
             customSlider.Setting = setting;
             customSlider.OnSliderChanged += value => dirty = true;
-            
+
             MessageBox nameTextBox = clone.transform.Find("nameText").GetComponent<MessageBox>();
             nameTextBox.MessageProvider = null;
             nameTextBox.SetMessage(new MessageDescriptor(label));
@@ -148,6 +150,75 @@ namespace OriDeModLoader.UIExtensions
                 TransparencyAnimator.Register(renderer.transform);
 
             settings.Add(setting);
+        }
+
+        static Transform resolutionTemplate = null;
+        public void AddDropdown(string label, string tooltip, int defaultSelection, OptionsListItem[] options)
+        {
+            if (!resolutionTemplate)
+            {
+                resolutionTemplate = SceneManager.GetSceneByName("loadBootstrap").GetRootGameObjects().First((GameObject go) => go.name == "optionsScreen").transform.Find("*settings/highlightFade/pivot/resolution");
+            }
+
+            GameObject clone = Instantiate(resolutionTemplate.gameObject);
+            clone.name = label;
+
+            clone.transform.SetParent(pivot);
+            CleverMenuItem cleverMenuItem = clone.GetComponent<CleverMenuItem>();
+            selectionManager.MenuItems.Add(cleverMenuItem);
+            AddToLayout(cleverMenuItem);
+
+            Destroy(cleverMenuItem.Visible);
+            cleverMenuItem.Visible = null;
+
+
+            MessageBox nameTextBox = clone.transform.Find("text/nameText").GetComponent<MessageBox>();
+            nameTextBox.MessageProvider = null;
+            nameTextBox.SetMessage(new MessageDescriptor(label));
+
+            ConfigureTooltip(cleverMenuItem.GetComponent<CleverMenuItemTooltip>(), tooltip);
+
+
+            MessageBox valueTextBox = clone.transform.Find("text/stateText").GetComponent<MessageBox>();
+            valueTextBox.MessageProvider = null;
+            valueTextBox.SetMessage(new MessageDescriptor(options[defaultSelection].label));
+
+
+            // Replace the resolution options component with our own generic one
+            var resolutionOptions = clone.GetComponentInChildren<ResolutionOptions>();
+            resolutionOptions.ClearItems();
+
+            resolutionOptions.GetComponent<TransparencyAnimator>().Reset(); // Back game bug also causes this list to grow every time the popup is dismissed, so let's clear it up for ours.
+            TransparencyAnimator.Register(resolutionOptions.transform.Find("abilityMessageBackground"));
+            
+
+            // The items are added to a component so they are delayed in getting added.
+            // If they are added immediately the resolution options stay on top. (?!?!)
+            var dropdownList = resolutionOptions.gameObject.AddComponent<CustomDropdown>();
+            dropdownList.gameObject.name = label + " options";
+            dropdownList.Item = resolutionOptions.Item;
+            dropdownList.Origin = dropdownList.transform;
+            dropdownList.Spacing = 0.4f;
+            dropdownList.Scrollable = true;
+            dropdownList.ScrollPivot = dropdownList.transform.Find("pivot");
+            dropdownList.OnScreenLimit = 16;
+            dropdownList.ScrollingSpeed = 8;
+            dropdownList.items = options;
+            dropdownList.defaultSelection = defaultSelection;
+            dropdownList.dismissOnChoose = true;
+
+
+            DestroyImmediate(resolutionOptions);
+
+
+            var dropdownGroup = dropdownList.GetComponent<CleverMenuItemGroup>();
+            dropdownGroup.OnBackPressed = this.group.OnOptionBackPressed;
+            dropdownGroup.IsVisible = false;
+            dropdownGroup.IsActive = false;
+            dropdownGroup.IsHighlightVisible = false;
+
+            // Required to allow the popup to be dismissed
+            this.group.AddItem(cleverMenuItem, dropdownGroup);
         }
 
         private void ConfigureTooltip(CleverMenuItemTooltip tooltipComponent, string tooltip)
