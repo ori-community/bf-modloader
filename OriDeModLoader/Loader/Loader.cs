@@ -75,6 +75,13 @@ namespace OriDeModLoader
                         LoadMod(PathUtil.Combine(modsDir, id, "mod.json"));
                     }
                 }
+
+                foreach (var mod in loadedMods)
+                {
+                    Log($"Initialising {mod.Mod.Name}");
+                    mod.Mod.Init();
+                    Log($"Initialised {mod.Mod.Name}");
+                }
             }
             else
             {
@@ -128,10 +135,6 @@ namespace OriDeModLoader
                     loadedMods.Add(modInfo);
 
                     Strings.InitSingle(modInfo.DirName, Language.English); // English is primary fallback
-
-                    Log($"Initialising {mod.Name}");
-                    mod.Init();
-                    Log($"Initialised {mod.Name}");
                 }
             }
             catch (Exception ex)
