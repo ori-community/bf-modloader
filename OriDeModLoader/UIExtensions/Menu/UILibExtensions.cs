@@ -6,14 +6,14 @@ using UnityEngine;
 
 namespace OriDeModLoader.UIExtensions
 {
-    internal static class UILibExtensions
+    public static class UILibExtensions
     {
-        internal static void AddMenuItem(this CleverMenuItemSelectionManager selectionManager, string label, Action onPress)
+        public static void AddMenuItem(this CleverMenuItemSelectionManager selectionManager, string label, Action onPress)
         {
             selectionManager.AddMenuItem(label, selectionManager.MenuItems.Count - 1, onPress);
         }
 
-        internal static void AddMenuItem(this CleverMenuItemSelectionManager selectionManager, string label, int index, Action onPress)
+        public static void AddMenuItem(this CleverMenuItemSelectionManager selectionManager, string label, int index, Action onPress)
         {
             CleverMenuItemLayout component = selectionManager.gameObject.GetComponent<CleverMenuItemLayout>();
             if (component != null)
@@ -23,7 +23,7 @@ namespace OriDeModLoader.UIExtensions
             }
         }
 
-        internal static void AddMenuItem(this CleverMenuItemSelectionManager selectionManager, string label, int index, CleverMenuItemLayout layout, Action onPress)
+        public static void AddMenuItem(this CleverMenuItemSelectionManager selectionManager, string label, int index, CleverMenuItemLayout layout, Action onPress)
         {
             CleverMenuItem cleverMenuItem = UnityEngine.Object.Instantiate<CleverMenuItem>(selectionManager.MenuItems[0]);
             cleverMenuItem.gameObject.name = label;
@@ -37,31 +37,31 @@ namespace OriDeModLoader.UIExtensions
             layout.AddItem(cleverMenuItem, index);
         }
 
-        internal static void AddItem(this CleverMenuItemLayout layout, CleverMenuItem item)
+        public static void AddItem(this CleverMenuItemLayout layout, CleverMenuItem item)
         {
             layout.MenuItems.Add(item);
             layout.Sort();
         }
 
-        internal static void AddItem(this CleverMenuItemLayout layout, CleverMenuItem item, int index)
+        public static void AddItem(this CleverMenuItemLayout layout, CleverMenuItem item, int index)
         {
             layout.MenuItems.Insert(index, item);
             layout.Sort();
         }
 
-        internal static void AddItem(this CleverMenuItemGroup group, CleverMenuItem item, CleverMenuItemGroupBase itemGroup)
+        public static void AddItem(this CleverMenuItemGroup group, CleverMenuItem item, CleverMenuItemGroupBase itemGroup)
         {
             CleverMenuItemGroup.CleverMenuItemGroupItem cleverMenuItemGroupItem = new CleverMenuItemGroup.CleverMenuItemGroupItem
             {
                 ItemGroup = itemGroup,
-                MenuItem = item
+                MenuItem = item,
             };
             cleverMenuItemGroupItem.ItemGroup.IsActive = false;
             itemGroup.OnBackPressed = (Action)Delegate.Combine(itemGroup.OnBackPressed, new Action(group.OnOptionBackPressed));
             group.Options.Add(cleverMenuItemGroupItem);
         }
 
-        internal static void Reset(this TransparencyAnimator animator)
+        public static void Reset(this TransparencyAnimator animator)
         {
             var childTransparencyAnimators = Traverse.Create(animator).Field("m_childTransparencyAnimators").GetValue<IList>();
             var cleverMenuItems = Traverse.Create(animator).Field("m_cleverMenuItems").GetValue<IList>();
