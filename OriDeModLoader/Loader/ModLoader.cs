@@ -102,13 +102,13 @@ namespace OriDeModLoader.Loader
                                 continue;
                             }
                         }
-
+                        
                         Harmony.DEBUG = true;
                         var harmony = new Harmony(mod.ModID + Guid.NewGuid());
                         var state = new ModState(mod, harmony, file);
                         _loadedModsById[mod.ModID] = state;
                         _loadedModsByFile[file] = state;
-                        AccessTools.GetTypesFromAssembly(modAssembly).Where(type => type.Namespace.StartsWith(modType.Namespace)).Do(type =>
+                        AccessTools.GetTypesFromAssembly(modAssembly).Where(type => (type.Namespace ?? "").StartsWith(modType.Namespace ?? "")).Do(type =>
                             harmony.CreateClassProcessor(type).Patch());
                         if (mod.GetSettings().Count > 0)
                         {
