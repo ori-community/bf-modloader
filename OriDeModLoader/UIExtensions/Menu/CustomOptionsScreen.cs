@@ -159,7 +159,9 @@ namespace OriDeModLoader.UIExtensions
             cleverMenuItem.PressedCallback += delegate ()
             {
                 kc.BeginEditing();
+                dirty = true;
             };
+            settings.Add(setting);
         }
         
         private void ConfigureTooltip(CleverMenuItemTooltip tooltipComponent, string tooltip)
