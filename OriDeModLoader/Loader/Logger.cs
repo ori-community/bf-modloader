@@ -18,6 +18,11 @@ namespace BFModLoader.ModLoader
                 Console.WriteLine("[" + level + "]" + message);
         }
 
+        public static void Error(string message) => Log(message, LogLevel.Error);
+        public static void Warn(string message) => Log(message, LogLevel.Warn);
+        public static void Debug(string message) => Log(message, LogLevel.Debug);
+        public static void Info(string message) => Log(message);
+
         public static void Log(Exception e, LogLevel level = LogLevel.Error, bool fullLog = false)
         {
             if (level > Level)
