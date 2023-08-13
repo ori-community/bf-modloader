@@ -60,10 +60,9 @@ namespace BaseModLib
                         using (var file = new StreamReader(fileName)) {
                             while (!file.EndOfStream) {
                                 string line = file.ReadLine();
-                                if (string.IsNullOrEmpty(line))
-                                    continue;
-                                var withoutComments = line.Split(new string[] { "//" }, StringSplitOptions.RemoveEmptyEntries)[0];
-
+                                if (string.IsNullOrEmpty(line)) continue;
+                                var withoutComments = line.Split(new string[] { "//" }, StringSplitOptions.None)[0];
+                                if (string.IsNullOrEmpty(withoutComments)) continue;
                                 var parts = withoutComments.Split(new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
                                 if (parts.Length != 2) {
                                     Logger.Log($"malformed settings line '{line}' in file {fileName}");
