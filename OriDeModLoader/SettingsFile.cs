@@ -12,14 +12,14 @@ namespace BaseModLib
     {
         private const string ConfigDir = "configs";
 
-        private static Dictionary<string, Dictionary<string, Dictionary<string, string>>> AllSettings = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
+        private static Dictionary<string, Dictionary<string, Dictionary<string, KeyValuePair<string,string>>>> AllSettings = new Dictionary<string, Dictionary<string, Dictionary<string, KeyValuePair<string,string>>>>();
 
         public static void RegisterSettingsGroup(string modName, string screenName, IEnumerable<SettingBase> settings)
         {
             if (!AllSettings.ContainsKey(modName))
-                AllSettings.Add(modName, new Dictionary<string, Dictionary<string, string>>());
+                AllSettings.Add(modName, new Dictionary<string, Dictionary<string, KeyValuePair<string,string>>>());
             if (!AllSettings[modName].ContainsKey(screenName))
-                AllSettings[modName].Add(screenName, new  Dictionary<string, string>());
+                AllSettings[modName].Add(screenName, new  Dictionary<string, KeyValuePair<string,string>>());
 
             var sets = AllSettings[modName][screenName];
             foreach (var set in settings) {
@@ -28,7 +28,7 @@ namespace BaseModLib
                     set.ModName = modName;
                     set.ScreenName = screenName;
                     if(sets.TryGetValue(set.Id, out var strset))
-                        set.Parse(strset);
+                        set.Parse(strset.Key);
                 }
                 catch (Exception e)
                 {
@@ -49,45 +49,38 @@ namespace BaseModLib
             foreach (var dirName in Directory.GetDirectories(ConfigDir))
             {
                 var modName = Path.GetFileName(dirName);
-                AllSettings[modName] = new Dictionary<string, Dictionary<string, string>>();
+                AllSettings[modName] = new Dictionary<string, Dictionary<string, KeyValuePair<string,string>>>();
                 foreach (var fileName in Directory.GetFiles(dirName))
                 {
                     if (!fileName.EndsWith(".txt"))
                         continue;
                     var screenName = Path.GetFileName(fileName).Replace(".txt", "");
-                    AllSettings[modName][screenName] = new Dictionary<string, string>();
-                    try
-                    {
-                        using (var file = new StreamReader(fileName))
-                        {
-                            while (!file.EndOfStream)
-                            {
+                    AllSettings[modName][screenName] = new Dictionary<string, KeyValuePair<string,string>>();
+                    try {
+                        using (var file = new StreamReader(fileName)) {
+                            while (!file.EndOfStream) {
                                 string line = file.ReadLine();
                                 if (string.IsNullOrEmpty(line))
                                     continue;
                                 var withoutComments = line.Split(new string[] { "//" }, StringSplitOptions.RemoveEmptyEntries)[0];
 
                                 var parts = withoutComments.Split(new char[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
-                                if (parts.Length != 2)
-                                {
+                                if (parts.Length != 2) {
                                     Logger.Log($"malformed settings line '{line}' in file {fileName}");
                                     continue;
                                 }
-                                AllSettings[modName][screenName][parts[0]] = parts[1];
+                                AllSettings[modName][screenName][parts[0]] = new KeyValuePair<string,string>(parts[1], "");
                             }
                         }
                     }
-                    catch(Exception e)
-                    {
+                    catch(Exception e) {
                         Logger.Log($"malformed settings file {fileName}: {e}", LogLevel.Error);
                     }
                 }
             }
-
         }
 
-        public static void WriteToFiles()
-        {
+        public static void WriteToFiles() {
             foreach (var modAndGroups in AllSettings)
             {
                 foreach (var screenAndSets in modAndGroups.Value)
@@ -98,10 +91,8 @@ namespace BaseModLib
                     {
                         var settingsMap = screenAndSets.Value;
                         using (var file = new StreamWriter($"{path}/{screenAndSets.Key}.txt", false))
-                        {
                             foreach (var setting in settingsMap)
-                                file.WriteLine($"{setting.Key}: {setting.Value}");
-                        }
+                                file.WriteLine($"{setting.Key}: {setting.Value.Key.PadRight(50 - (setting.Key + setting.Value.Key).Length)}// {setting.Value.Value}");
                     } catch(Exception e)
                     {
                         Logger.Log($"error writing settings file for mod {modAndGroups.Key}: {e}", LogLevel.Error);
@@ -113,7 +104,9 @@ namespace BaseModLib
         public static void Update(IEnumerable<SettingBase> settings)
         {
             foreach (var setting in settings)
-                AllSettings[setting.ModName][setting.ScreenName][setting.Id] = setting.ToString();
+            {
+                AllSettings[setting.ModName][setting.ScreenName][setting.Id] = new KeyValuePair<string,string>(setting.ToString(), setting.Tooltip);
+            }
             WriteToFiles();
         }
 
