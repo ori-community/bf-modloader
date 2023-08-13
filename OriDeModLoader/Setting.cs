@@ -121,7 +121,7 @@ namespace BaseModLib
         {
             string[] groups = value.Split(new[]
             {
-                ", "
+                ","
             }, StringSplitOptions.None);
             IEnumerable<IEnumerable<KeyCode>> binds = groups.Select(a => a.Split(new[]
             {
