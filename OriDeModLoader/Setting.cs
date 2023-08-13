@@ -105,16 +105,13 @@ namespace BaseModLib
 
     public class KeybindSetting : Setting<IEnumerable<IEnumerable<KeyCode>>>
     {
-        public KeybindSetting(string id, string label, string tooltip, KeyCode defaultValue) :
-            this(id, label, tooltip, new[]{new[] {defaultValue}.AsEnumerable()})
-        {
-        }     public KeybindSetting(string id, string label, string tooltip, IEnumerable<KeyCode> defaultValue) :
-            this(id, label, tooltip, new[]{defaultValue})
-        {
-        }
+        public KeybindSetting(string id, string label, string tooltip, KeyCode defaultValue, Action onPress = null) :
+            this(id, label, tooltip, new[]{new[] {defaultValue}.AsEnumerable()}, onPress) { }
+        public KeybindSetting(string id, string label, string tooltip, IEnumerable<KeyCode> defaultValue, Action onPress = null) :
+            this(id, label, tooltip, new[]{defaultValue}, onPress) { }
 
-        public KeybindSetting(string id, string label, string tooltip, IEnumerable<IEnumerable<KeyCode>> defaultValue) : base(id, label, tooltip, defaultValue)
-        {
+        public KeybindSetting(string id, string label, string tooltip, IEnumerable<IEnumerable<KeyCode>> defaultValue, Action onPress = null) : base(id, label, tooltip, defaultValue) {
+            OnPress = onPress;
         }
 
         public override void Parse(string value)
@@ -141,8 +138,9 @@ namespace BaseModLib
             return Value.Any(bind => bind.All(Input.GetKey));
         }
 
-        public bool IsJustPressed()
-        {
+        public Action OnPress;
+        
+        public bool IsJustPressed() {
             return Value.Any(bind => bind.All(Input.GetKey) && bind.Any(Input.GetKeyDown));
         }
     }

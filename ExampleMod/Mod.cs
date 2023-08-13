@@ -33,7 +33,7 @@ namespace ExampleMod
         };
         
         public static readonly BoolSetting FlipSetting = new BoolSetting("example.flip", "Always flip", "Make Ori always/never flip", false);
-        public static readonly KeybindSetting KeySetting = new KeybindSetting("example.button", "Random Bind", "Testing Binds", KeyCode.T);
+        public static readonly KeybindSetting KeySetting = new KeybindSetting("example.button", "Random Bind", "Testing Binds", KeyCode.O, delegate { Logger.Log("Bind Pressed!!!"); });
     }
 
 
