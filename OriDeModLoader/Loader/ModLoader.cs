@@ -110,10 +110,13 @@ namespace OriDeModLoader.Loader
                         _loadedModsByFile[file] = state;
                         AccessTools.GetTypesFromAssembly(modAssembly).Where(type => (type.Namespace ?? "").StartsWith(modType.Namespace ?? "")).Do(type =>
                             harmony.CreateClassProcessor(type).Patch());
-                        if (mod.GetSettings().Count > 0)
+                        
+                        foreach (var screen in mod.GetSettings())
                         {
-                            state.Settings = CustomMenuManager.RegisterOptionsScreen<SettingsListOptionScreen>(mod.Name, 3, options => options.Init(mod.GetSettings()));
+                            var menu = CustomMenuManager.RegisterOptionsScreen<SettingsListOptionScreen>(screen.name, 3, options => options.Init(screen.settings));
+                            state.Settings.Add(menu);
                         }
+                        
                         mod.Init();
                         Logger.Log("Loaded mod " + mod.ModID + " with version " + mod.Version);
                     }
@@ -155,7 +158,8 @@ namespace OriDeModLoader.Loader
 
         public void UnloadMod(ModState modState)
         {
-            if (modState.Settings is CustomOptionsScreenDef def)
+            
+            foreach (var def in modState.Settings)
             {
                 CustomMenuManager.UnregisterSettingsScreen(def);
             }

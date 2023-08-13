@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BaseModLib;
 
 namespace OriDeModLoader
@@ -14,7 +15,7 @@ namespace OriDeModLoader
         string ModID { get; }
         string Version { get; }
         
-        List<SettingBase> GetSettings();
+        List<SettingsScreenConfig> GetSettings();
     }
 
     public abstract class BaseMod: IMod
@@ -27,6 +28,23 @@ namespace OriDeModLoader
         public abstract string Version { get; }
         
         public virtual void FixedUpdate() { }
-        public virtual List<SettingBase> GetSettings() => new List<SettingBase>();
+        public virtual List<SettingsScreenConfig> GetSettings() => new List<SettingsScreenConfig>();
+
+        protected SettingsScreenConfig DefaultSettingsScreen(params SettingBase[] settings)
+        {
+            return this.SettingsScreen(this.Name, settings);
+        }
+        
+        protected SettingsScreenConfig SettingsScreen(string name, params SettingBase[] settings)
+        {
+            return new SettingsScreenConfig
+            {
+                name = name,
+                settings = settings.ToList()
+            };
+        }
+        
+        
+        
     }
 }

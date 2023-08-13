@@ -7,6 +7,12 @@ using Input = UnityEngine.Input;
 
 namespace BaseModLib
 {
+    public struct SettingsScreenConfig
+    {
+        public string name;
+        public List<SettingBase> settings;
+    }
+
     public abstract class SettingBase
     {
         //if we want translations, I'd just turn those two into an identifier

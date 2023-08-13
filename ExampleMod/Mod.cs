@@ -7,37 +7,33 @@ using Logger = BFModLoader.ModLoader.Logger;
 
 namespace ExampleMod
 {
-    public class Mod : IMod
+    public class Mod : BaseMod
     {
-        public string Version => "0.0.1";
-        public void Init()
+        public override string Version => "0.0.1";
+        public override void Init()
         {
-            Logger.Log("Loaded");
-
             KeySetting.OnValueChanged += val =>
                 Logger.Log(KeySetting.ToString());
         }
-
-        public void Unload()
-        {
-            Logger.Log("Killed");
-        }
-
-        public virtual void FixedUpdate()
+        public override void FixedUpdate()
         {
             if (KeySetting.IsJustPressed()){
-                Logger.Log("Just Pressed!");
+                //Logger.Log("Just Pressed!");
             }else if (KeySetting.IsPressed()){
-                Logger.Log("Held!");
+                //Logger.Log("Held!");
             }
         }
 
-        public string Name => "Example Mod";
-        public string ModID => "xemsys.bf.examplemod";
+        public override string Name => "Example Mod";
+        public override string ModID => "xemsys.bf.examplemod";
 
-        public List<SettingBase> GetSettings() => new List<SettingBase> {FlipSetting, KeySetting};
+        public override List<SettingsScreenConfig> GetSettings() => new List<SettingsScreenConfig>
+        {
+            this.DefaultSettingsScreen(FlipSetting, KeySetting),
+        };
+        
         public static readonly BoolSetting FlipSetting = new BoolSetting("example.flip", "Always flip", "Make Ori always/never flip", false);
-        public static readonly KeybindSetting KeySetting = new KeybindSetting("example.button", "Random Bind", "Testing Binds", KeyCode.A);
+        public static readonly KeybindSetting KeySetting = new KeybindSetting("example.button", "Random Bind", "Testing Binds", KeyCode.T);
     }
 
 

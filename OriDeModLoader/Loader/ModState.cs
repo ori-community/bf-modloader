@@ -1,4 +1,5 @@
-﻿using OriDeModLoader.UIExtensions;
+﻿using System.Collections.Generic;
+using OriDeModLoader.UIExtensions;
 
 namespace OriDeModLoader
 {
@@ -11,14 +12,14 @@ namespace OriDeModLoader
             public IMod Mod;
             public Harmony Harmony;
             public string File;
-            public CustomOptionsScreenDef? Settings;
+            public List<CustomOptionsScreenDef> Settings;
 
             public ModState(IMod mod, Harmony harmony, string file) : this()
             {
                 Mod = mod;
                 Harmony = harmony;
                 File = file;
-                Settings = null;
+                Settings = new List<CustomOptionsScreenDef>();
             }
         }
     }
