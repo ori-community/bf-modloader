@@ -92,9 +92,8 @@ namespace BaseModLib
                         var settingsMap = screenAndSets.Value;
                         using (var file = new StreamWriter($"{path}/{screenAndSets.Key}.txt", false))
                             foreach (var setting in settingsMap)
-                                file.WriteLine($"{setting.Key}: {setting.Value.Key.PadRight(50 - (setting.Key + setting.Value.Key).Length)}// {setting.Value.Value}");
-                    } catch(Exception e)
-                    {
+                                file.WriteLine($"// {setting.Value.Value}\n{setting.Key}: {setting.Value.Key}");
+                    } catch(Exception e) {
                         Logger.Log($"error writing settings file for mod {modAndGroups.Key}: {e}", LogLevel.Error);
                     }
                 }
