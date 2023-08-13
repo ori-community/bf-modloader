@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using BaseModLib;
 using BFModLoader.ModLoader;
 using HarmonyLib;
 using OriDeModLoader.BFModLoader.ModLoader;
@@ -110,9 +111,9 @@ namespace OriDeModLoader.Loader
                         _loadedModsByFile[file] = state;
                         AccessTools.GetTypesFromAssembly(modAssembly).Where(type => (type.Namespace ?? "").StartsWith(modType.Namespace ?? "")).Do(type =>
                             harmony.CreateClassProcessor(type).Patch());
-                        
                         foreach (var screen in mod.GetSettings())
                         {
+                            SettingsFile.RegisterSettingsGroup(mod.Name, screen.name, screen.settings);
                             var menu = CustomMenuManager.RegisterOptionsScreen<SettingsListOptionScreen>(screen.name, 3, options => options.Init(screen.settings));
                             state.Settings.Add(menu);
                         }

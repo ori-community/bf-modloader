@@ -32,6 +32,8 @@ namespace BaseModLib
         public string Id;
         public string Label;
         public string Tooltip;
+        public string ModName;
+        public string ScreenName;
     }
 
     public abstract class Setting<T> : SettingBase
@@ -43,10 +45,6 @@ namespace BaseModLib
 
             Default = defaultValue;
             Value = Default;
-
-            string savedValue = SettingsFile.GetValue(id);
-            if (savedValue != null)
-                Parse(savedValue); // TODO handle error
         }
 
         public override string ToString()

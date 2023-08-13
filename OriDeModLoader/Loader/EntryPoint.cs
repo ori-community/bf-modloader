@@ -15,18 +15,19 @@ namespace OriDeModLoader.Loader
         private static readonly List<IMod> loadedMods = new List<IMod>();
 
         public static void BootModLoader()
-        { 
+        {
+            FileUtil.TouchFile("modloader-heartbeat");
             //Attach a terminal to our game 
             ConsoleUtil.CreateConsole();
-            FileUtil.TouchFile("modloader-heartbeat");
-
             Application.logMessageReceived += LogCallback;
+            Log(Directory.GetCurrentDirectory());
 
             //Patch time
             var harmony = new Harmony("com.oride.modloader");
             harmony.PatchAll();
+            Log("hewwo?");
 
-            SettingsFile.LoadFromFile();
+            SettingsFile.LoadFromDir();
             ModLoader.Instance.Start();
         }
 
