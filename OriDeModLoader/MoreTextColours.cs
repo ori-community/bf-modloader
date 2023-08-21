@@ -18,7 +18,6 @@ namespace OriDeModLoader
             // <#hexcode>This will be the colour specified in hexcode</>
             if (___styleStatementBuffer.Length > 0 && ___styleStatementBuffer[0] == '#')
             {
-                Console.WriteLine(___styleStatementBuffer.ToString());
                 if (ColorUtility.TryParseHtmlString(___styleStatementBuffer.ToString(), out Color colour))
                 {
                     var newStyle = new TextStyle()
@@ -39,8 +38,6 @@ namespace OriDeModLoader
                         renderer = null,
                         rendererId = -1
                     };
-
-                    Console.WriteLine(newStyle.color);
 
                     ___styleStack.Push(___currentStyle);
                     ___currentStyle.ApplyOnTop(newStyle);
