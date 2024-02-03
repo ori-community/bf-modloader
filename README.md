@@ -1,5 +1,7 @@
 # Ori DE Mod Loader
 
+This repo has been archived - please use [ori-modding-bf-core](https://github.com/ori-community/ori-modding-bf-core) instead.
+
 Loads mods with [MInject](https://github.com/EquiFox/MInject) or [Doorstop](https://github.com/NeighTools/UnityDoorstop)
 
 ## Usage for users
